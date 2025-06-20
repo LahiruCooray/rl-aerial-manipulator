@@ -22,7 +22,7 @@ def get_helix_waypoints(t, n):
     x = 0.5*np.cos(waypoints_t)
     y = 0.5*np.sin(waypoints_t)
     z = waypoints_t
-
+    print("Helix waypoints:", x, y, z)
     return np.stack((x, y, z), axis=-1)
 
 def get_MST_coefficients(waypoints):
