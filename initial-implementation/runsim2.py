@@ -23,7 +23,7 @@ def main():
     
     # Control loop for animation
     step_count = 0
-    max_steps = 2000  # Prevent infinite loops
+    max_steps = 50000  # Prevent infinite loops
     
     def control_loop(i):
         nonlocal obs, step_count
@@ -55,8 +55,13 @@ def main():
             if terminated or truncated:
                 if 'success' in info and info['success']:
                     print("🎉 All waypoints reached successfully!")
-                else:
-                    print("❌ Episode terminated (crash or timeout)")
+                elif 'success' in info and not info['success'] and info["crashed"]:
+                    print("🚨 Episode terminated (crashed): Quadcopter hit the ground!")
+                elif 'success' in info and not info['success'] and info["out_of_bounds"]:
+                    print("🚨 Episode terminated (out of bounds): Quadcopter flew too far!")
+                else:                   
+                    print("🚨 Episode terminated: Quadcopter stopped moving!")
+                 
                 # Reset for continuous visualization
                 obs, _ = env.reset()
                 waypoints[:] = env.waypoint_list  # Update waypoints for plot

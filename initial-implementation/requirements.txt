@@ -1,6 +1,6 @@
 matplotlib
 numpy
 scipy
-stable-baselines3 
+stable-baselines3[extra] 
 gymnasium 
 tensorboard

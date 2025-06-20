@@ -82,6 +82,7 @@ class WaypointQuadEnv(gym.Env):
         
         # Check if reached current waypoint
         pos = self.quadcopter.position()
+        vel = self.quadcopter.velocity()
         distance_to_waypoint = np.linalg.norm(pos - self.current_waypoint)
         
         if distance_to_waypoint < 0.2:  # Reached waypoint
@@ -92,12 +93,20 @@ class WaypointQuadEnv(gym.Env):
                 self.current_waypoint = self.waypoint_list[self.waypoint_index]
             else:
                 # All waypoints reached!
-                return self._get_observation(), reward + 500.0, True, False, {'success': True}
+                # Bonus for low velocity at final waypoint
+                velocity_norm = np.linalg.norm(vel)
+                stopping_bonus = 200.0 if velocity_norm < 0.1 else -10.0 * velocity_norm
+                return self._get_observation(), reward + 500.0 + stopping_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
         # Termination conditions
-        terminated = (pos[2] < 0.1 or  # Crashed
-                     np.linalg.norm(pos) > 10)  # Too far away
-        
+        terminated = False
+
+        if pos[2] < 0.1:
+            reward -= 100.0
+            return self._get_observation(), reward, True, False, {'success': False, 'crashed': True}
+        if np.linalg.norm(pos) > 10:
+            reward -= 50.0
+            return self._get_observation(), reward, True, False, {'success': False, 'out_of_bounds': True}
         return self._get_observation(), reward, terminated, False, {}
     
     def _calculate_reward(self):
