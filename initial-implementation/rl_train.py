@@ -2,11 +2,13 @@ import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.vec_env import VecNormalize
 from rl_env import WaypointQuadEnv
 
 def train():
     # Create environment
     env = make_vec_env(WaypointQuadEnv, n_envs=4)
+   # env = VecNormalize(env, norm_obs=True, norm_reward=False)
     
     # Initialize RL algorithm
     model = PPO(
@@ -31,7 +33,7 @@ def train():
     print(f"Mean reward: {mean_reward} +/- {std_reward}")
     
     # Save the model
-    model.save("waypoint_controller4")
+    model.save("waypoint_controller5")
     print("Model saved successfully!")
     
     return model

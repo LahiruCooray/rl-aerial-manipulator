@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def main():
     # Load trained RL model
     try:
-        model = PPO.load("waypoint_controller4", custom_objects={
+        model = PPO.load("waypoint_controller4_final", custom_objects={
     "clip_range": 0.2,        
     "lr_schedule": 0.0003     
 })

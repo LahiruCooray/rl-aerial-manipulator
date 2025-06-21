@@ -9,10 +9,10 @@ class WaypointQuadEnv(gym.Env):
     def __init__(self):
         super().__init__()
         
-        # State: [pos(3), vel(3), quat(4), omega(3)] = 13D
+        # State: [pos(3), vel(3), quat(4), omega(3), relative_pos(3), is_final(1)] = 17D
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, 
-            shape=(13,), dtype=np.float32
+            shape=(17,), dtype=np.float32
         )
         
         # Action: [thrust, moment_x, moment_y, moment_z]
@@ -35,11 +35,12 @@ class WaypointQuadEnv(gym.Env):
         # Random start position
         start_pos = np.random.uniform(-1, 1, 3)
         start_pos[2] = np.random.uniform(1, 2)  # Keep above ground
+        self.num_waypoints = np.random.randint(2, 5) 
         
         self.quadcopter = Quadcopter(start_pos, (0,0,0))
         
         # Generate random waypoints
-        self.waypoint_list = self._generate_waypoints()
+        self.waypoint_list = self._generate_waypoints(self.num_waypoints)
         self.waypoint_index = 0
         self.current_waypoint = self.waypoint_list[0]
         self.last_distance = None
@@ -59,16 +60,19 @@ class WaypointQuadEnv(gym.Env):
         return waypoints
     
     def _get_observation(self):
-        """13D state: [pos(3), vel(3), quat(4), omega(3)]"""
+        """17D state: [pos(3), vel(3), quat(4), omega(3), relative_pos(3), is_final(1)]"""
         pos = self.quadcopter.position()
         vel = self.quadcopter.velocity()
+        is_final = 1.0 if np.array_equal(self.current_waypoint, self.waypoint_list[-1]) else 0.0
+
+        relative_pos = self.current_waypoint - pos
         
         # Get quaternion directly from state (already stored as quaternion)
         quat = self.quadcopter.state[6:10]  # [qw, qx, qy, qz]
         
         omega = self.quadcopter.omega()
         
-        return np.concatenate([pos, vel, quat, omega]).astype(np.float32)
+        return np.concatenate([pos, vel, quat, omega, relative_pos, [is_final]]).astype(np.float32)
     
     def step(self, action):
         # Apply control - use params.mass instead of self.quadcopter.mass

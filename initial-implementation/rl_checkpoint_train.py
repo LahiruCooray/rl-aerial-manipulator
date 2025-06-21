@@ -3,6 +3,7 @@ import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.vec_env import VecNormalize
 from rl_env import WaypointQuadEnv
 
 CHECKPOINT_PATH = "waypoint_controller4"
