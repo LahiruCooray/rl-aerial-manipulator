@@ -7,7 +7,10 @@ import matplotlib.pyplot as plt
 def main():
     # Load trained RL model
     try:
-        model = PPO.load("waypoint_controller")
+        model = PPO.load("waypoint_controller2", custom_objects={
+    "clip_range": 0.2,        
+    "lr_schedule": 0.0003     
+})
         print("Loaded trained model successfully!")
     except:
         print("No trained model found. Please train first or use random actions.")

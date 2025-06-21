@@ -99,7 +99,7 @@ class WaypointQuadEnv(gym.Env):
                 rot_vel_norm = np.linalg.norm(rot_vel)
                 stop_rotation_bonus =200.0 if rot_vel_norm < 0.1 else -20.0 * rot_vel_norm
                 stopping_bonus = 200.0 if velocity_norm < 0.1 else -10.0 * velocity_norm
-                return self._get_observation(), reward + 500.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
+                return self._get_observation(), reward + 300.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
         # Termination conditions
         terminated = False
@@ -121,16 +121,16 @@ class WaypointQuadEnv(gym.Env):
         distance = np.linalg.norm(pos - self.current_waypoint)
         
         # Reward components
-        distance_reward = -distance  # Closer is better
+        distance_reward = -distance * 1.5  # Closer is better
         speed_penalty = -0.01 * np.linalg.norm(vel)**2  # Don't go too fast
         if np.linalg.norm(rot_vel) > 0.1:
-            speed_penalty -= 5.0 * np.linalg.norm(rot_vel)
+            speed_penalty -= 0.01 * np.linalg.norm(rot_vel)**2
         time_penalty = -0.1  # Encourage minimal time
         
         # Progress reward (how much closer did we get?)
         if self.last_distance is not None:
             progress = self.last_distance - distance
-            progress_reward = 20 * progress
+            progress_reward = 30 * progress
         else:
             progress_reward = 0.0
             

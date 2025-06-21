@@ -16,6 +16,9 @@ def train():
         n_steps=2048,
         batch_size=128,
         n_epochs=10,
+        device="cpu",
+        gamma=0.99,
+        gae_lambda=0.95,
         verbose=1,
         tensorboard_log="./tensorboard_logs/"
     )
@@ -26,7 +29,7 @@ def train():
     print(f"Mean reward: {mean_reward} +/- {std_reward}")
     
     # Save the model
-    model.save("waypoint_controller2")
+    model.save("waypoint_controller3")
     print("Model saved successfully!")
     
     return model
