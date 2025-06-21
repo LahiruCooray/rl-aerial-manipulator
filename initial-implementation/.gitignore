@@ -43,3 +43,4 @@ coverage/
 logs/
 test-results/
 sim-venv/
+venv/
