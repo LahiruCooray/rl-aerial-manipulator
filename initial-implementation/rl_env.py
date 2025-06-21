@@ -33,8 +33,8 @@ class WaypointQuadEnv(gym.Env):
         super().reset(seed=seed)
         
         # Random start position
-        start_pos = np.random.uniform(-2, 2, 3)
-        start_pos[2] = np.random.uniform(0.5, 3)  # Keep above ground
+        start_pos = np.random.uniform(-1, 1, 3)
+        start_pos[2] = np.random.uniform(1, 2)  # Keep above ground
         
         self.quadcopter = Quadcopter(start_pos, (0,0,0))
         
@@ -46,14 +46,14 @@ class WaypointQuadEnv(gym.Env):
         
         return self._get_observation(), {}
     
-    def _generate_waypoints(self, num_waypoints=5):
+    def _generate_waypoints(self, num_waypoints=2):
         """Generate random waypoints in 3D space"""
         waypoints = []
         for _ in range(num_waypoints):
             wp = np.array([
-                np.random.uniform(-3, 3),    # x
-                np.random.uniform(-3, 3),    # y  
-                np.random.uniform(1, 5)      # z (stay above ground)
+                np.random.uniform(-1, 1),    # x
+                np.random.uniform(-1, 1),    # y  
+                np.random.uniform(2, 3.5)      # z (stay above ground)
             ])
             waypoints.append(wp)
         return waypoints
@@ -103,12 +103,12 @@ class WaypointQuadEnv(gym.Env):
         
         # Termination conditions
         terminated = False
-
+        #print(f" Current waypoint: {self.current_waypoint}, Position: {pos}")
         if pos[2] < 0.1:
-            reward -= 100.0
+            reward -= 300.0
             return self._get_observation(), reward, True, False, {'success': False, 'crashed': True}
         if np.linalg.norm(pos) > 10:
-            reward -= 50.0
+            reward -= 250.0
             return self._get_observation(), reward, True, False, {'success': False, 'out_of_bounds': True}
         return self._get_observation(), reward, terminated, False, {}
     

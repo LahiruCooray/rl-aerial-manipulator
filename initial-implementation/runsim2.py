@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def main():
     # Load trained RL model
     try:
-        model = PPO.load("waypoint_controller2", custom_objects={
+        model = PPO.load("waypoint_controller4", custom_objects={
     "clip_range": 0.2,        
     "lr_schedule": 0.0003     
 })
@@ -26,7 +26,7 @@ def main():
     
     # Control loop for animation
     step_count = 0
-    max_steps = 50000  # Prevent infinite loops
+    max_steps = 10000  # Prevent infinite loops
     
     def control_loop(i):
         nonlocal obs, step_count
