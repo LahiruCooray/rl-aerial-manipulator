@@ -83,6 +83,7 @@ class WaypointQuadEnv(gym.Env):
         # Check if reached current waypoint
         pos = self.quadcopter.position()
         vel = self.quadcopter.velocity()
+        rot_vel = self.quadcopter.omega()
         distance_to_waypoint = np.linalg.norm(pos - self.current_waypoint)
         
         if distance_to_waypoint < 0.2:  # Reached waypoint
@@ -95,8 +96,10 @@ class WaypointQuadEnv(gym.Env):
                 # All waypoints reached!
                 # Bonus for low velocity at final waypoint
                 velocity_norm = np.linalg.norm(vel)
+                rot_vel_norm = np.linalg.norm(rot_vel)
+                stop_rotation_bonus =200.0 if rot_vel_norm < 0.1 else -20.0 * rot_vel_norm
                 stopping_bonus = 200.0 if velocity_norm < 0.1 else -10.0 * velocity_norm
-                return self._get_observation(), reward + 500.0 + stopping_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
+                return self._get_observation(), reward + 500.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
         # Termination conditions
         terminated = False
@@ -112,6 +115,7 @@ class WaypointQuadEnv(gym.Env):
     def _calculate_reward(self):
         pos = self.quadcopter.position()
         vel = self.quadcopter.velocity()
+        rot_vel = self.quadcopter.omega()
         
         # Distance to current waypoint
         distance = np.linalg.norm(pos - self.current_waypoint)
@@ -119,12 +123,14 @@ class WaypointQuadEnv(gym.Env):
         # Reward components
         distance_reward = -distance  # Closer is better
         speed_penalty = -0.01 * np.linalg.norm(vel)**2  # Don't go too fast
+        if np.linalg.norm(rot_vel) > 0.1:
+            speed_penalty -= 5.0 * np.linalg.norm(rot_vel)
         time_penalty = -0.1  # Encourage minimal time
         
         # Progress reward (how much closer did we get?)
         if self.last_distance is not None:
             progress = self.last_distance - distance
-            progress_reward = 10.0 * progress
+            progress_reward = 20 * progress
         else:
             progress_reward = 0.0
             
