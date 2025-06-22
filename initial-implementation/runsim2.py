@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def main():
     # Load trained RL model
     try:
-        model = PPO.load("waypoint_controller4_final", custom_objects={
+        model = PPO.load("waypoint_controller_final", custom_objects={
     "clip_range": 0.2,        
     "lr_schedule": 0.0003     
 })
@@ -26,7 +26,7 @@ def main():
     
     # Control loop for animation
     step_count = 0
-    max_steps = 10000  # Prevent infinite loops
+    max_steps = 5000  # Prevent infinite loops
     
     def control_loop(i):
         nonlocal obs, step_count
@@ -34,7 +34,10 @@ def main():
         # Run multiple control steps per animation frame
         for _ in range(4):  # Same as original runsim.py
             if step_count >= max_steps:
-                break
+                obs, _ = env.reset()
+                waypoints = env.waypoint_list  # Update waypoints for plot
+                step_count = 0
+            
                 
             if model is not None:
                 # Use trained RL policy
@@ -67,7 +70,7 @@ def main():
                  
                 # Reset for continuous visualization
                 obs, _ = env.reset()
-                waypoints[:] = env.waypoint_list  # Update waypoints for plot
+                waypoints = env.waypoint_list  # Update waypoints for plot
                 step_count = 0
                 break
         

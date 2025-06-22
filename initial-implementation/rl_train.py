@@ -29,12 +29,12 @@ def train():
 
     # Train the model
     model.learn(total_timesteps=1000000, progress_bar=True)
+    model.save("waypoint_controller5")
+    print("Model saved successfully!")
+    
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10)
     print(f"Mean reward: {mean_reward} +/- {std_reward}")
     
-    # Save the model
-    model.save("waypoint_controller5")
-    print("Model saved successfully!")
     
     return model
 

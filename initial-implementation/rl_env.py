@@ -38,6 +38,9 @@ class WaypointQuadEnv(gym.Env):
         self.num_waypoints = np.random.randint(2, 5) 
         
         self.quadcopter = Quadcopter(start_pos, (0,0,0))
+
+        self.current_step = 0
+        self.max_episode_steps = 1200
         
         # Generate random waypoints
         self.waypoint_list = self._generate_waypoints(self.num_waypoints)
@@ -52,9 +55,9 @@ class WaypointQuadEnv(gym.Env):
         waypoints = []
         for _ in range(num_waypoints):
             wp = np.array([
-                np.random.uniform(-1, 1),    # x
-                np.random.uniform(-1, 1),    # y  
-                np.random.uniform(2, 3.5)      # z (stay above ground)
+                np.random.uniform(-2.5, 2.5),    # x
+                np.random.uniform(-2.5, 2.5),    # y  
+                np.random.uniform(2, 4)      # z (stay above ground)
             ])
             waypoints.append(wp)
         return waypoints
@@ -63,7 +66,7 @@ class WaypointQuadEnv(gym.Env):
         """17D state: [pos(3), vel(3), quat(4), omega(3), relative_pos(3), is_final(1)]"""
         pos = self.quadcopter.position()
         vel = self.quadcopter.velocity()
-        is_final = 1.0 if np.array_equal(self.current_waypoint, self.waypoint_list[-1]) else 0.0
+        is_final = 1.0 if np.allclose(self.current_waypoint, self.waypoint_list[-1]) else 0.0
 
         relative_pos = self.current_waypoint - pos
         
@@ -80,6 +83,7 @@ class WaypointQuadEnv(gym.Env):
         M = action[1:4] * 0.1  # Scale moments
         
         self.quadcopter.update(self.dt, F, M.reshape(-1, 1))  # M needs to be column vector
+        
         
         # Calculate reward
         reward = self._calculate_reward()
@@ -105,16 +109,18 @@ class WaypointQuadEnv(gym.Env):
                 stopping_bonus = 200.0 if velocity_norm < 0.1 else -10.0 * velocity_norm
                 return self._get_observation(), reward + 300.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
+        truncated = self.current_step >= self.max_episode_steps
+        self.current_step += 1
         # Termination conditions
         terminated = False
         #print(f" Current waypoint: {self.current_waypoint}, Position: {pos}")
         if pos[2] < 0.1:
             reward -= 300.0
-            return self._get_observation(), reward, True, False, {'success': False, 'crashed': True}
+            return self._get_observation(), reward, True, truncated, {'success': False, 'crashed': True}
         if np.linalg.norm(pos) > 10:
             reward -= 250.0
-            return self._get_observation(), reward, True, False, {'success': False, 'out_of_bounds': True}
-        return self._get_observation(), reward, terminated, False, {}
+            return self._get_observation(), reward, True, truncated, {'success': False, 'out_of_bounds': True}
+        return self._get_observation(), reward, terminated, truncated, {}
     
     def _calculate_reward(self):
         pos = self.quadcopter.position()
@@ -129,7 +135,7 @@ class WaypointQuadEnv(gym.Env):
         speed_penalty = -0.01 * np.linalg.norm(vel)**2  # Don't go too fast
         if np.linalg.norm(rot_vel) > 0.1:
             speed_penalty -= 0.01 * np.linalg.norm(rot_vel)**2
-        time_penalty = -0.1  # Encourage minimal time
+        time_penalty = -2.0  # Encourage minimal time
         
         # Progress reward (how much closer did we get?)
         if self.last_distance is not None:

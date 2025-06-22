@@ -38,15 +38,14 @@ def train():
 
     # Train model
     model.learn(total_timesteps=TOTAL_TIMESTEPS, progress_bar=True)
+    
+    model.save(SAVE_PATH)
+    print(f"Final model saved as {SAVE_PATH}.zip")
 
     # Evaluate performance
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10)
     print(f"Mean reward: {mean_reward:.2f} ± {std_reward:.2f}")
 
-    # Final save with descriptive name
-
-    model.save(SAVE_PATH)
-    print(f"Final model saved as {SAVE_PATH}.zip")
 
     return model
 
