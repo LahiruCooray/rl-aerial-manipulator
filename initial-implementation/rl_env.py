@@ -40,7 +40,7 @@ class WaypointQuadEnv(gym.Env):
         self.quadcopter = Quadcopter(start_pos, (0,0,0))
 
         self.current_step = 0
-        self.max_episode_steps = 1200
+        self.max_episode_steps = 2000
         
         # Generate random waypoints
         self.waypoint_list = self._generate_waypoints(self.num_waypoints)
@@ -94,8 +94,10 @@ class WaypointQuadEnv(gym.Env):
         rot_vel = self.quadcopter.omega()
         distance_to_waypoint = np.linalg.norm(pos - self.current_waypoint)
         
-        if distance_to_waypoint < 0.2:  # Reached waypoint
-            reward += 100.0  # Big bonus for reaching waypoint
+        if distance_to_waypoint  < 0.5:
+            reward += 1
+        if distance_to_waypoint < 0.1:  # Reached waypoint
+            reward += 300.0  # Big bonus for reaching waypoint
             self.waypoint_index += 1
             
             if self.waypoint_index < len(self.waypoint_list):
@@ -107,7 +109,7 @@ class WaypointQuadEnv(gym.Env):
                 rot_vel_norm = np.linalg.norm(rot_vel)
                 stop_rotation_bonus =200.0 if rot_vel_norm < 0.1 else -20.0 * rot_vel_norm
                 stopping_bonus = 200.0 if velocity_norm < 0.1 else -10.0 * velocity_norm
-                return self._get_observation(), reward + 300.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
+                return self._get_observation(), reward + 400.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
         truncated = self.current_step >= self.max_episode_steps
         self.current_step += 1
@@ -115,7 +117,9 @@ class WaypointQuadEnv(gym.Env):
         terminated = False
         #print(f" Current waypoint: {self.current_waypoint}, Position: {pos}")
         if pos[2] < 0.1:
-            reward -= 300.0
+            reward -= 350.0
+            if vel[2] < -0.1:# Quadcopter is falling
+                reward -= vel[2] * 150.0  # Heavily penalize falling
             return self._get_observation(), reward, True, truncated, {'success': False, 'crashed': True}
         if np.linalg.norm(pos) > 10:
             reward -= 250.0
@@ -131,16 +135,18 @@ class WaypointQuadEnv(gym.Env):
         distance = np.linalg.norm(pos - self.current_waypoint)
         
         # Reward components
-        distance_reward = -distance * 1.5  # Closer is better
-        speed_penalty = -0.01 * np.linalg.norm(vel)**2  # Don't go too fast
+        distance_reward = -distance
+        speed_penalty = -0.1 * np.linalg.norm(vel)**2  # Don't go too fast
         if np.linalg.norm(rot_vel) > 0.1:
-            speed_penalty -= 0.01 * np.linalg.norm(rot_vel)**2
-        time_penalty = -2.0  # Encourage minimal time
+            speed_penalty -= 0.006 * np.linalg.norm(rot_vel)**2
+        time_penalty = -1.0
         
         # Progress reward (how much closer did we get?)
         if self.last_distance is not None:
             progress = self.last_distance - distance
-            progress_reward = 30 * progress
+            progress_reward = 10 * progress
+            if progress_reward > 0:
+                progress_reward += 2
         else:
             progress_reward = 0.0
             
