@@ -95,7 +95,7 @@ class WaypointQuadEnv(gym.Env):
         distance_to_waypoint = np.linalg.norm(pos - self.current_waypoint)
         
         if distance_to_waypoint  < 0.5:
-            reward += 1
+            reward += 1.0
         if distance_to_waypoint < 0.1:  # Reached waypoint
             reward += 300.0  # Big bonus for reaching waypoint
             self.waypoint_index += 1
