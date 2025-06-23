@@ -1,44 +1,43 @@
 import os
-import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.vec_env import VecNormalize
-from rl_env import WaypointQuadEnv
+from rl_env_scaledObs import WaypointQuadEnv
 from torch import nn
+import torch
 
-CHECKPOINT_PATH = "waypoint_controller4"
-SAVE_PATH = "waypoint_controller4_final"
-TOTAL_TIMESTEPS = 1_000_000  # Can incrementally increase if resuming
+CHECKPOINT_PATH = "waypoint_controller_unnormalized_3M"
+SAVE_PATH = "waypoint_controller_unnormalized_3.5M"
+TOTAL_TIMESTEPS = 500_000  # Can incrementally increase if resuming
 
 def train():
     # Create environment (VecEnv for PPO)
-    env = make_vec_env(WaypointQuadEnv, n_envs=4)
+    env = make_vec_env(WaypointQuadEnv, n_envs=8)
 
     # Load checkpoint if exists
     policy_kwargs = dict(
         net_arch=[128, 64, 64],
-        activation_fn=nn.ReLU
+        activation_fn=nn.Tanh  # Using Tanh for better exploration in continuous action spaces
     )
 
     # Load PPO checkpoint if available, else new model
     if os.path.exists(CHECKPOINT_PATH + ".zip"):
         print(f"Loading model from {CHECKPOINT_PATH}...")
-        model = PPO.load(CHECKPOINT_PATH, env=env, device="cuda", policy_kwargs=policy_kwargs)
+        model = PPO.load(CHECKPOINT_PATH, env=env,device="cuda" if torch.cuda.is_available() else "cpu" , policy_kwargs=policy_kwargs)
     else:
         print("Starting new training...")
         model = PPO(
             "MlpPolicy",
             env,
-            learning_rate=3e-4,
+            learning_rate=2e-4,
             n_steps=2048,
             batch_size=128,
             n_epochs=10,
-            device="cuda",
-            gamma=0.99,
-            gae_lambda=0.95,
-            clip_range=0.2,
-            ent_coef=0.01,
+            device="cuda" if torch.cuda.is_available() else "cpu",
+            gamma=0.995,
+            gae_lambda=0.9,
+            clip_range=0.2,  # Controls how far new policy can deviate from the old one
+            ent_coef=0.01,   # Encourages exploration
             verbose=1,
             policy_kwargs=policy_kwargs,
             tensorboard_log="./tensorboard_logs/"

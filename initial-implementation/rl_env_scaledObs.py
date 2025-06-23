@@ -2,7 +2,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 from simul_files.model.quadcopter import Quadcopter
-import simul_files.model.params as params  # Import params module
+import simul_files.model.params as params # Import params module
 from scipy.spatial.transform import Rotation
 
 class WaypointQuadEnv(gym.Env):
@@ -72,11 +72,11 @@ class WaypointQuadEnv(gym.Env):
 
         # Normalize
         obs = np.concatenate([
-            pos ,
-            vel ,
+            pos / 10.0,
+            vel / 5.0,
             quat,
-            omega,
-            rel_pos,
+            omega / 5.0,
+            rel_pos / 2.0,
             [1.0 if np.allclose(self.current_waypoint, self.waypoint_list[-1]) else 0.0]
         ]).astype(np.float32)
         
@@ -98,6 +98,7 @@ class WaypointQuadEnv(gym.Env):
         vel = self.quadcopter.velocity()
         rot_vel = self.quadcopter.omega()
         distance_to_waypoint = np.linalg.norm(pos - self.current_waypoint)
+        #print(f"Distance to waypoint {self.waypoint_index}: {distance_to_waypoint:.2f}, length of waypoint list: {len(self.waypoint_list)}")
         waypoint_dir = self.current_waypoint - pos
         unit_dir = waypoint_dir / np.linalg.norm(waypoint_dir)
         vel_toward_waypoint = np.dot(vel, unit_dir)
