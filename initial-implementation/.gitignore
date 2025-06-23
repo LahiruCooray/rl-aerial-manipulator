@@ -16,7 +16,6 @@ build/
 *.tmp
 .idea/
 .vscode/
-*.pkl
 *.h5
 *.ckpt
 *.tensorboard/
