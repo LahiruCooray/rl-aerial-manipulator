@@ -39,6 +39,7 @@ This directory contains code to run simulations using Reinforcement Learning (RL
      ```
 
      📌 **Note**: Inside `runsim_vecN.py`, also update the model filename accordingly.
+![sim](https://github.com/user-attachments/assets/f32cd3a2-9e7b-4171-92d5-3596df1d6c27)
 
 ## Additional Notes
 
