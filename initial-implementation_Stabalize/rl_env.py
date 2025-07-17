@@ -75,7 +75,7 @@ class WaypointQuadEnv(gym.Env):
             self.base_wind_velocity = np.array([
                 wind_strength * np.cos(wind_direction),
                 wind_strength * np.sin(wind_direction),
-                np.random.uniform(-0.2, 0.2)  # Small vertical component
+                np.random.uniform(-0.2, 0.2) * wind_strength  # Small vertical component
             ])
             
             self.wind_direction_target = wind_direction
@@ -91,7 +91,7 @@ class WaypointQuadEnv(gym.Env):
             return
         
         # slowly change wind direction
-        current_direction = np.arctan2(self.wind_velocity[1], self.wind_velocity[0])
+        current_direction = np.arctan2(self.base_wind_velocity[1], self.base_wind_velocity[0])
         direction_diff = self.wind_direction_target - current_direction
 
         #wrap the direction difference to [-pi, pi]
@@ -120,7 +120,7 @@ class WaypointQuadEnv(gym.Env):
             gust = np.array([
                 gust_strength * np.cos(gust_direction),
                 gust_strength * np.sin(gust_direction),
-                np.random.uniform(-0.5, 0.5)  # Small vertical gust
+                np.random.uniform(-0.5, 0.5) * gust_strength  # Small vertical gust
             ])
             self.wind_velocity += gust
 
@@ -139,7 +139,7 @@ class WaypointQuadEnv(gym.Env):
         air_drag_coefficient = 0.1  # Adjust as needed
 
         # Wind force proportional to relative wind velocity squared
-        wind_force = air_drag_coefficient * np.linalg.norm(relative_wind) * relative_wind
+        wind_force = air_drag_coefficient * relative_wind * np.linalg.norm(relative_wind) 
 
         return wind_force
     
