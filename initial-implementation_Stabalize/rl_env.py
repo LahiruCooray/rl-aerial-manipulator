@@ -28,6 +28,17 @@ class WaypointQuadEnv(gym.Env):
         self.waypoint_index = 0
         self.dt = 1.0/200.0
         self.last_distance = None
+
+        # Wind parameters
+        self.wind_enabled = True
+        self.wind_strength = 2.0  # Maximum wind speed (m/s)
+        self.wind_turbulence = 0.5  # Turbulence intensity
+        self.wind_direction_change_rate = 0.1  # How quickly wind direction changes
+        
+        # Wind state variables
+        self.base_wind_velocity = np.zeros(3)  # Base wind direction
+        self.wind_velocity = np.zeros(3)  # Current wind with turbulence
+        self.wind_direction_target = np.random.uniform(0, 2*np.pi)  # Target wind direction
         
     def reset(self, seed=None):
         super().reset(seed=seed)
@@ -47,6 +58,9 @@ class WaypointQuadEnv(gym.Env):
         self.waypoint_index = 0
         self.current_waypoint = self.waypoint_list[0]
         self.last_distance = None
+
+        # Reset wind
+        self._reset_wind()
         
         return self._get_observation(), {}
     
