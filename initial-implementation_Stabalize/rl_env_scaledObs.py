@@ -28,6 +28,17 @@ class WaypointQuadEnv(gym.Env):
         self.waypoint_index = 0
         self.dt = 1.0/200.0
         self.last_distance = None
+
+        # Wind parameters
+        self.wind_enabled = True
+        self.wind_strength = 2.0  # Maximum wind speed (m/s)
+        self.wind_turbulence = 0.5  # Turbulence intensity
+        self.wind_direction_change_rate = 0.1  # How quickly wind direction changes
+        
+        # Wind state variables
+        self.base_wind_velocity = np.zeros(3)  # Base wind direction
+        self.wind_velocity = np.zeros(3)  # Current wind with turbulence
+        self.wind_direction_target = np.random.uniform(0, 2*np.pi)  # Target wind direction
         
     def reset(self, seed=None):
         super().reset(seed=seed)
@@ -47,8 +58,90 @@ class WaypointQuadEnv(gym.Env):
         self.waypoint_index = 0
         self.current_waypoint = self.waypoint_list[0]
         self.last_distance = None
+
+        # Reset wind
+        self._reset_wind()
         
         return self._get_observation(), {}
+    
+    def _reset_wind(self):
+        """Reset wind parameters for a new episode"""
+        if self.wind_enabled:
+            # Random base wind strength and direction
+            wind_strength = np.random.uniform(0, self.wind_strength)
+            wind_direction = np.random.uniform(0, 2 * np.pi)
+
+            # Conver to velocity components(horizontal wind)
+            self.base_wind_velocity = np.array([
+                wind_strength * np.cos(wind_direction),
+                wind_strength * np.sin(wind_direction),
+                np.random.uniform(-0.2, 0.2)  # Small vertical component
+            ])
+            
+            self.wind_direction_target = wind_direction
+            self.wind_velocity = self.base_wind_velocity.copy()
+
+        else:
+            self.base_wind_velocity = np.zeros(3)
+            self.wind_velocity = np.zeros(3)
+
+    def _update_wind(self):
+        """Update wind velocity with turbulence and direction changes"""
+        if not self.wind_enabled:
+            return
+        
+        # slowly change wind direction
+        current_direction = np.arctan2(self.wind_velocity[1], self.wind_velocity[0])
+        direction_diff = self.wind_direction_target - current_direction
+
+        #wrap the direction difference to [-pi, pi]
+        direction_diff = np.arctan2(np.sin(direction_diff), np.cos(direction_diff))
+
+        # gradually change the direction
+        new_direction = current_direction + direction_diff * self.wind_direction_change_rate * self.dt
+
+        # Ocationally change target direction
+        if np.random.rand() < 0.001:  # 0.1% chance to change direction
+            self.wind_direction_target = np.random.uniform(0, 2 * np.pi)
+
+        # Update base wind
+        wind_magnitude = np.linalg.norm(self.base_wind_velocity[:2])
+        self.base_wind_velocity[0] = wind_magnitude * np.cos(new_direction)
+        self.base_wind_velocity[1] = wind_magnitude * np.sin(new_direction)
+
+        # Add turbulence
+        turbulence = np.random.normal(0, self.wind_turbulence, 3)
+        self.wind_velocity = self.base_wind_velocity + turbulence
+
+        # Add gusts (sudden changes in wind speed)
+        if np.random.rand() < 0.005:  # 0.5% chance to add a gust
+            gust_strength = np.random.uniform(0.5, 2.0)
+            gust_direction = np.random.uniform(0, 2 * np.pi)
+            gust = np.array([
+                gust_strength * np.cos(gust_direction),
+                gust_strength * np.sin(gust_direction),
+                np.random.uniform(-0.5, 0.5)  # Small vertical gust
+            ])
+            self.wind_velocity += gust
+
+    def _apply_wind_force(self):
+        """Calculate wind force on the quadcopter"""
+        if not self.wind_enabled:
+            return np.zeros(3)
+        
+        # Get quadcopter velocity
+        quad_vel = self.quadcopter.velocity()
+
+        # Relative wind velocity (wind - quadcopter velocity)
+        relative_wind = self.wind_velocity - quad_vel
+
+        # Air drag coefficient
+        air_drag_coefficient = 0.1  # Adjust as needed
+
+        # Wind force proportional to relative wind velocity squared
+        wind_force = air_drag_coefficient * np.linalg.norm(relative_wind) * relative_wind
+
+        return wind_force
     
     def _generate_waypoints(self, num_waypoints=2):
         """Generate random waypoints in 3D space"""
@@ -83,11 +176,20 @@ class WaypointQuadEnv(gym.Env):
         return obs
     
     def step(self, action):
+
+        # Update wind
+        self._update_wind()
+
         # Apply control - use params.mass instead of self.quadcopter.mass
         F = action[0] * params.mass * params.g  # Fixed: use params.mass
         M = action[1:4] * 0.1  # Scale moments
         
+        # Apply wind force
+        wind_force = self._apply_wind_force()
+        
         self.quadcopter.update(self.dt, F, M.reshape(-1, 1))  # M needs to be column vector
+        #Manually apply wind force to quadcopter
+        self.quadcopter.state[3:6] += wind_force * self.dt / params.mass # Adjust acceleration due to wind force
         
         
         # Calculate reward
@@ -166,3 +268,19 @@ class WaypointQuadEnv(gym.Env):
         self.last_distance = distance
         
         return distance_reward + speed_penalty + time_penalty + progress_reward
+    
+    def set_wind_parameters(self, enabled=True, strength=2.0, turbulence=0.5, direction_change_rate=0.1):
+        """Configure wind parameters"""
+        self.wind_enabled = enabled
+        self.wind_strength = strength
+        self.wind_turbulence = turbulence
+        self.wind_direction_change_rate = direction_change_rate
+        
+    def get_wind_info(self):
+        """Get current wind information for debugging/visualization"""
+        return {
+            'base_wind_velocity': self.base_wind_velocity,
+            'current_wind_velocity': self.wind_velocity,
+            'wind_strength': np.linalg.norm(self.wind_velocity),
+            'wind_direction': np.arctan2(self.wind_velocity[1], self.wind_velocity[0])
+        }

@@ -19,6 +19,15 @@ def main():
     
     # Initialize environment
     env = WaypointQuadEnv()
+
+    # Configure wind parameters for training
+    env.set_wind_parameters(
+        enabled=True,
+        strength=2.0,           # Moderate wind for training
+        turbulence=0.5,         # Medium turbulence
+        direction_change_rate=0.1  # Gradual direction changes
+    )
+
     obs, _ = env.reset()
     
     # Get waypoints for visualization
