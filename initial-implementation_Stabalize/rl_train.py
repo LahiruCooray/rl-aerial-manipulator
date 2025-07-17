@@ -33,8 +33,8 @@ def train():
     )
 
     # Train the model
-    model.learn(total_timesteps=1000000, progress_bar=True)
-    model.save("waypoint_controller_unnormalized")
+    model.learn(total_timesteps=100, progress_bar=True)
+    model.save("D:/Final Year/FYP/rl-aerial-manipulator/initial-implementation_Stabalize/waypoint_controller_unnormalized")
     print("Model saved successfully!")
 
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10)

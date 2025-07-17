@@ -6,9 +6,9 @@ from rl_env_scaledObs import WaypointQuadEnv
 from torch import nn
 import torch
 
-CHECKPOINT_PATH = "waypoint_controller_unnormalized_3M"
-SAVE_PATH = "waypoint_controller_unnormalized_3.5M"
-TOTAL_TIMESTEPS = 500_000  # Can incrementally increase if resuming
+CHECKPOINT_PATH = "D:/Final Year/FYP/rl-aerial-manipulator/initial-implementation_Stabalize/waypoint_controller_unnormalized.zip"
+SAVE_PATH = "D:/Final Year/FYP/rl-aerial-manipulator/initial-implementation_Stabalize/waypoint_controller_unnormalized_stable_5M"
+TOTAL_TIMESTEPS = 3  # Can incrementally increase if resuming
 
 def train():
     # Create environment (VecEnv for PPO)

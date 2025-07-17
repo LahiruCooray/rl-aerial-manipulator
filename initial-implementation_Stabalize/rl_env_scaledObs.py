@@ -207,11 +207,11 @@ class WaypointQuadEnv(gym.Env):
 
         
         if distance_to_waypoint  < 0.5 and vel_toward_waypoint > 0.1:
-            reward += 10.0
+            reward += 0.1
         elif distance_to_waypoint < 0.5 and vel_toward_waypoint < 0.1:
-            reward -= 10.0
+            reward -= 0.1
         if distance_to_waypoint < 0.1:  # Reached waypoint
-            reward += 100.0  # Big bonus for reaching waypoint
+            reward += 5.0  # Big bonus for reaching waypoint
             self.waypoint_index += 1
             
             if self.waypoint_index < len(self.waypoint_list):
@@ -221,9 +221,9 @@ class WaypointQuadEnv(gym.Env):
                 # Bonus for low velocity at final waypoint
                 velocity_norm = np.linalg.norm(vel)
                 rot_vel_norm = np.linalg.norm(rot_vel)
-                stop_rotation_bonus =100.0 if rot_vel_norm < 0.1 else -20.0 * rot_vel_norm
-                stopping_bonus = 100.0 if velocity_norm < 0.1 else -10.0 * velocity_norm
-                return self._get_observation(), reward + 400.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
+                stop_rotation_bonus = 2.0 if rot_vel_norm < 0.1 else -0.2 * rot_vel_norm
+                stopping_bonus = 2.0 if velocity_norm < 0.1 else -0.1 * velocity_norm
+                return self._get_observation(), reward + 20.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
         truncated = self.current_step >= self.max_episode_steps
         self.current_step += 1
@@ -231,13 +231,13 @@ class WaypointQuadEnv(gym.Env):
         terminated = False
         #print(f" Current waypoint: {self.current_waypoint}, Position: {pos}")
         if pos[2] < 0.1:
-            reward -= 100
+            reward -= 5.0
             if vel[2] < 0:# Quadcopter is falling
                # print(vel[2])
-                reward += vel[2] * 100.0  # Heavily penalize falling
+                reward += vel[2] * 1  # Heavily penalize falling
             return self._get_observation(), reward, True, truncated, {'success': False, 'crashed': True}
         if np.linalg.norm(pos) > 10:
-            reward -= 100.0
+            reward -= 5.0
             return self._get_observation(), reward, True, truncated, {'success': False, 'out_of_bounds': True}
         return self._get_observation(), reward, terminated, truncated, {}
     
@@ -245,29 +245,35 @@ class WaypointQuadEnv(gym.Env):
         pos = self.quadcopter.position()
         vel = self.quadcopter.velocity()
         rot_vel = self.quadcopter.omega()
+        qart = self.quadcopter.state[6:10]
         
-        # Distance to current waypoint
         distance = np.linalg.norm(pos - self.current_waypoint)
         
-        # Reward components
-        distance_reward = -distance * 2
-        speed_penalty = -0.1 * np.linalg.norm(vel)**2  # Don't go too fast
-        if np.linalg.norm(rot_vel) > 0.1:
-            speed_penalty -= 0.01 * np.linalg.norm(rot_vel)**2
-        time_penalty = -0.1
+        # Normalized distance reward (0 to 1)
+        distance_reward = max(-1, 1- distance)
         
-        # Progress reward (how much closer did we get?)
+        # Speed penalties (normalized)
+        speed_penalty = -0.1 * min(5, np.sqrt(np.sum(vel**2)) ) # Penalize high speeds
+
+        # Penalty for orientation
+        orientation_penatity = -0.2* min(5, np.sqrt((qart[0] - 1)**2 + qart[1]**2 + qart[2]**2 + qart[3]**2) )  # Penalize non-level orientation
+
+            # Rotational velocity penalty
+        rot_penalty = -0.1 * min(5, np.sqrt(np.sum(rot_vel**2)) ) # Penalize high rotational speeds
+        
+        # Progress reward (bounded)
+        progress_reward = 0.0
         if self.last_distance is not None:
             progress = self.last_distance - distance
-            progress_reward = 20 * progress
-            if progress_reward > 0:
-                progress_reward += 2
-        else:
-            progress_reward = 0.0
-            
+            progress_reward = np.clip(progress * 5, -1, 1)  # Bounded progress
+
+        
+        # Stability reward
+        stability_reward = 0.1 if np.linalg.norm(rot_vel) < 0.05 else 0.0
+        
         self.last_distance = distance
         
-        return distance_reward + speed_penalty + time_penalty + progress_reward
+        return distance_reward + speed_penalty  + progress_reward  + stability_reward + orientation_penatity + rot_penalty
     
     def set_wind_parameters(self, enabled=True, strength=2.0, turbulence=0.5, direction_change_rate=0.1):
         """Configure wind parameters"""

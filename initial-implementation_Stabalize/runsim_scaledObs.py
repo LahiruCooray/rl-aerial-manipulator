@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 def main():
     # Load trained RL model
     try:
-        model = PPO.load("waypoint_controller_scaledObs_3_5M", custom_objects={
+        model = PPO.load("D:/Final Year/FYP/rl-aerial-manipulator/initial-implementation_Stabalize/waypoint_controller_unnormalized_stable_5M.zip", custom_objects={
     "clip_range": 0.2,        
     "lr_schedule": 0.0003     
 })
