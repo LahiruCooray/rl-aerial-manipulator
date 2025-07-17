@@ -142,26 +142,30 @@ class WaypointQuadEnv(gym.Env):
         pos = self.quadcopter.position()
         vel = self.quadcopter.velocity()
         rot_vel = self.quadcopter.omega()
+        qart = self.quadcopter.state[6:10]
         
         # Distance to current waypoint
         distance = np.linalg.norm(pos - self.current_waypoint)
         
         # Reward components
-        distance_reward = -distance * 2
-        speed_penalty = -0.1 * np.linalg.norm(vel)**2  # Don't go too fast
+        distance_reward = max(0.0, 1.0 - distance)  # Closer is better
+        speed_penalty = -0.1 * np.sqrt(np.sum(vel**2))  # Penalize high speed
+
+        # Penalty for orientation
+        orientation_penatity = -0.1*np.sqrt((qart[0] - 1)**2 + qart[1]**2 + qart[2]**2 + qart[3]**2)  # Penalize non-level orientation
+
         if np.linalg.norm(rot_vel) > 0.1:
             speed_penalty -= 0.01 * np.linalg.norm(rot_vel)**2
-        time_penalty = -0.1
+            
+        time_penalty = -0.01
         
         # Progress reward (how much closer did we get?)
         if self.last_distance is not None:
             progress = self.last_distance - distance
-            progress_reward = 20 * progress
-            if progress_reward > 0:
-                progress_reward += 2
+            progress_reward = 2 * progress
         else:
             progress_reward = 0.0
             
         self.last_distance = distance
         
-        return distance_reward + speed_penalty + time_penalty + progress_reward
+        return distance_reward + speed_penalty + time_penalty + progress_reward + orientation_penatity
