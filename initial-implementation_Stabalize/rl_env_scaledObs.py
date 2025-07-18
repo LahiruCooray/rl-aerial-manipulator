@@ -207,11 +207,11 @@ class WaypointQuadEnv(gym.Env):
 
         
         if distance_to_waypoint  < 0.5 and vel_toward_waypoint > 0.1:
-            reward += 0.1
+            reward += 0.1 * (1 - distance_to_waypoint)  # Encourage moving towards waypoint
         elif distance_to_waypoint < 0.5 and vel_toward_waypoint < 0.1:
-            reward -= 0.1
+            reward -= 0.1 
         if distance_to_waypoint < 0.1:  # Reached waypoint
-            reward += 5.0  # Big bonus for reaching waypoint
+            reward += 5.0 * (1 + (0.1 - distance_to_waypoint))  # Bonus for reaching waypoint
             self.waypoint_index += 1
             
             if self.waypoint_index < len(self.waypoint_list):
@@ -221,8 +221,8 @@ class WaypointQuadEnv(gym.Env):
                 # Bonus for low velocity at final waypoint
                 velocity_norm = np.linalg.norm(vel)
                 rot_vel_norm = np.linalg.norm(rot_vel)
-                stop_rotation_bonus = 2.0 if rot_vel_norm < 0.1 else -0.2 * rot_vel_norm
-                stopping_bonus = 2.0 if velocity_norm < 0.1 else -0.1 * velocity_norm
+                stop_rotation_bonus = 5 if rot_vel_norm < 0.1 else -0.2 * rot_vel_norm
+                stopping_bonus = 5 if velocity_norm < 0.1 else -0.2 * velocity_norm
                 return self._get_observation(), reward + 20.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
         truncated = self.current_step >= self.max_episode_steps
@@ -234,7 +234,7 @@ class WaypointQuadEnv(gym.Env):
             reward -= 5.0
             if vel[2] < 0:# Quadcopter is falling
                # print(vel[2])
-                reward += vel[2] * 1  # Heavily penalize falling
+                reward += np.clip(vel[2] * 5, -5, 0)  # Heavily penalize falling
             return self._get_observation(), reward, True, truncated, {'success': False, 'crashed': True}
         if np.linalg.norm(pos) > 10:
             reward -= 5.0
@@ -250,15 +250,18 @@ class WaypointQuadEnv(gym.Env):
         distance = np.linalg.norm(pos - self.current_waypoint)
         
         # Normalized distance reward (0 to 1)
-        distance_reward = max(-1, 1- distance)
-        
+        distance_reward = 2  / (1 + distance)
+
         # Speed penalties (normalized)
-        speed_penalty = -0.1 * min(5, np.sqrt(np.sum(vel**2)) ) # Penalize high speeds
+        if np.linalg.norm(vel) > 0.5:
+            speed_penalty = -0.1 * min(5, np.sqrt(np.sum(vel**2)) ) # Penalize high speeds
+        else:
+            speed_penalty = 0.0
 
         # Penalty for orientation
         orientation_penatity = -0.2* min(5, np.sqrt((qart[0] - 1)**2 + qart[1]**2 + qart[2]**2 + qart[3]**2) )  # Penalize non-level orientation
 
-            # Rotational velocity penalty
+        # Rotational velocity penalty
         rot_penalty = -0.1 * min(5, np.sqrt(np.sum(rot_vel**2)) ) # Penalize high rotational speeds
         
         # Progress reward (bounded)
