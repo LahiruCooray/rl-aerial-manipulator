@@ -58,3 +58,5 @@ python runsim_scaledObs.py
 
 
 ![sim](https://github.com/user-attachments/assets/86054425-71d7-41da-8d23-b255abac6f66)
+
+<img width="1507" height="430" alt="ep_mean_reward" src="https://github.com/user-attachments/assets/597a125c-1284-4c0b-8dc7-d8610ca2d57b" />
