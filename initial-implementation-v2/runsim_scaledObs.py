@@ -6,6 +6,10 @@ import matplotlib.pyplot as plt
 
 
 def main():
+    # Configuration
+    plot_save = True  # Set to True to save plots
+    save_directory = "./saved_plots"  # Directory to save plots
+    
     # Load trained RL model
     try:
         model = PPO.load("checkpoints_from_8_6M/ppo_model_2300000_steps.zip", custom_objects={
@@ -27,15 +31,17 @@ def main():
     
     # Control loop for animation
     step_count = 0
+    episode_count = 0
     max_steps = 5000  # Prevent infinite loopssss
-    
+    timesteps_per_frame = 1
     def control_loop(i):
-        nonlocal obs, step_count, waypoints_holder
+        nonlocal obs, step_count, episode_count, waypoints_holder, timesteps_per_frame, max_steps, model
         
         # Run multiple control steps per animation frame
-        for _ in range(4):  # Same as original runsim.py
+        for _ in range(timesteps_per_frame):
             if step_count >= max_steps:
-                reset_history()
+                reset_history(save_plots=plot_save, save_dir=save_directory, episode_num=episode_count)
+                episode_count += 1
                 obs, _ = env.reset()
                 waypoints_holder[0] = np.array(env.waypoint_list)  # Update waypoints for plot
                 step_count = 0
@@ -73,7 +79,8 @@ def main():
                     print("🚨 Episode terminated: Quadcopter stopped moving!")
                  
                 # Reset for continuous visualization
-                reset_history()
+                reset_history(save_plots=plot_save, save_dir=save_directory, episode_num=episode_count)
+                episode_count += 1
                 obs, _ = env.reset()
                 waypoints_holder[0] = np.array(env.waypoint_list)  # Update waypoints for plot
                 print(f"Waypoints to visit: {waypoints_holder[0]}")
@@ -83,7 +90,7 @@ def main():
         return env.quadcopter.world_frame()
     
     # Start 3D visualization
-    plot_quad_3d(waypoints_holder, control_loop)
+    plot_quad_3d(waypoints_holder, control_loop, env, timesteps_per_frame, plots2d=True)
 
 if __name__ == "__main__":
     main()
