@@ -34,6 +34,8 @@ class WaypointQuadEnv(gym.Env):
         self.counter = None
         self.counter_activated = None
         self.counter_limit = None
+        self.F = None
+        self.M = None
         
     def reset(self, seed=None):
         super().reset(seed=seed)
@@ -42,7 +44,7 @@ class WaypointQuadEnv(gym.Env):
         start_pos = np.random.uniform(-1, 1, 3)
         start_pos[2] = np.random.uniform(1, 2)  # Keep above ground
         #self.num_waypoints = np.random.randint(2, 4) 
-        self.num_waypoints =  10
+        self.num_waypoints =  1
         # Random start orientation
         roll = np.random.uniform(-np.pi/2, np.pi/2)
         pitch = np.random.uniform(-np.pi/2, np.pi/2)
@@ -122,6 +124,9 @@ class WaypointQuadEnv(gym.Env):
         # Apply control - use params.mass instead of self.quadcopter.mass
         F = action[0] * params.mass * params.g  # Fixed: use params.mass
         M = action[1:4] * 0.1  # Scale moments
+        self.F = F
+        self.M = M
+        
         
         self.quadcopter.update(self.dt, F, M.reshape(-1, 1))  # M needs to be column vector
         
