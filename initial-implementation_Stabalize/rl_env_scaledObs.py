@@ -46,7 +46,8 @@ class WaypointQuadEnv(gym.Env):
         # Random start position
         start_pos = np.random.uniform(-1, 1, 3)
         start_pos[2] = np.random.uniform(1, 2)  # Keep above ground
-        self.num_waypoints = np.random.randint(1, 3) 
+        #self.num_waypoints = np.random.randint(1, 3) 
+        self.num_waypoints = 1
         
         self.quadcopter = Quadcopter(start_pos, (0,0,0))
 
@@ -211,7 +212,7 @@ class WaypointQuadEnv(gym.Env):
         elif distance_to_waypoint < 0.5 and vel_toward_waypoint < 0.1:
             reward -= 0.1 
         if distance_to_waypoint < 0.1:  # Reached waypoint
-            reward += 5.0 * (1 + (0.1 - distance_to_waypoint))  # Bonus for reaching waypoint
+            reward += 15.0 * (1 + (0.1 - distance_to_waypoint))  # Bonus for reaching waypoint
             self.waypoint_index += 1
             
             if self.waypoint_index < len(self.waypoint_list):
@@ -223,7 +224,12 @@ class WaypointQuadEnv(gym.Env):
                 rot_vel_norm = np.linalg.norm(rot_vel)
                 stop_rotation_bonus = 5 if rot_vel_norm < 0.1 else -0.2 * rot_vel_norm
                 stopping_bonus = 5 if velocity_norm < 0.1 else -0.2 * velocity_norm
-                return self._get_observation(), reward + 20.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
+
+                # Stay at final waypoint for 100 steps
+                '''for _ in range(100):
+                    obs, reward, terminated, truncated, info = self.step(np.zeros(4))'''
+
+                return self._get_observation(), reward + 40.0 + stopping_bonus + stop_rotation_bonus, True, False, {'success': True, 'stopped': velocity_norm < 0.1}
         
         truncated = self.current_step >= self.max_episode_steps
         self.current_step += 1
@@ -250,7 +256,14 @@ class WaypointQuadEnv(gym.Env):
         distance = np.linalg.norm(pos - self.current_waypoint)
         
         # Normalized distance reward (0 to 1)
-        distance_reward = 2  / (1 + distance)
+        #distance_reward = 2  / (1 + distance)
+
+        if distance < 0.2:
+            distance_reward = 1.5 + (0.2 - distance) * 2.5  # Scale to [1.5, 2.0] range
+        elif distance < 0.5:
+            distance_reward = 1 + (0.5 - distance)  # Scale to [1, 1.5] range
+        else:
+            distance_reward = (1 - distance) * 2
 
         # Speed penalties (normalized)
         if np.linalg.norm(vel) > 0.5:
@@ -263,6 +276,9 @@ class WaypointQuadEnv(gym.Env):
 
         # Rotational velocity penalty
         rot_penalty = -0.1 * min(5, np.sqrt(np.sum(rot_vel**2)) ) # Penalize high rotational speeds
+
+        #time penalty
+        time_penalty = -0.01
         
         # Progress reward (bounded)
         progress_reward = 0.0
@@ -276,7 +292,7 @@ class WaypointQuadEnv(gym.Env):
         
         self.last_distance = distance
         
-        return distance_reward + speed_penalty  + progress_reward  + stability_reward + orientation_penatity + rot_penalty
+        return distance_reward + speed_penalty  + progress_reward  + stability_reward + orientation_penatity + rot_penalty + time_penalty
     
     def set_wind_parameters(self, enabled=True, strength=2.0, turbulence=0.5, direction_change_rate=0.1):
         """Configure wind parameters"""
