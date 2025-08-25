@@ -58,17 +58,18 @@ pip install numpy matplotlib stable-baselines3
 
 ## Comparison Plots
 
+
 **RMSE per Episode**
 
-![RMSE](saved_plots/rmse_per_episode.png)
+<img src="saved_plots/rmse.png" width="600"/>
 
 **Rise Time per Episode**
 
-![Rise Time](saved_plots/rise_time_per_episode.png)
+<img src="saved_plots/rise_time.png" width="600"/>
 
 **Settling Time per Episode**
 
-![Settling Time](saved_plots/settling_time_per_episode.png)
+<img src="saved_plots/settling_time.png" width="600"/>
 
 ## Notes
 - Both controllers use the same random start/end pairs for fair comparison.
