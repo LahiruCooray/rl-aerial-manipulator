@@ -48,6 +48,28 @@ Install dependencies with:
 pip install numpy matplotlib stable-baselines3
 ```
 
+## Comparison Metrics
+
+| Metric        | PID (Mean ± Std) | RL (Mean ± Std) |
+|---------------|------------------|-----------------|
+| RMSE (m)      | 0.962956         | 1.715404        |
+| Rise Time     | 24.05            | 211.82          |
+| Settling Time | 399.84           | 500.87          |
+
+## Comparison Plots
+
+**RMSE per Episode**
+
+![RMSE](saved_plots/rmse_per_episode.png)
+
+**Rise Time per Episode**
+
+![Rise Time](saved_plots/rise_time_per_episode.png)
+
+**Settling Time per Episode**
+
+![Settling Time](saved_plots/settling_time_per_episode.png)
+
 ## Notes
 - Both controllers use the same random start/end pairs for fair comparison.
 - All data and plots are saved in the current directory or `saved_plots/`.
