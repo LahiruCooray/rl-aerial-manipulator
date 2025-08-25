@@ -14,5 +14,7 @@ for _ in range(NUM_EPISODES):
         np.random.uniform(0, 8)
     ]
     random_pairs.append((start_pos, end_pos))
-np.save("random_start_end_pairs.npy", np.array(random_pairs, dtype=object))
-print("random_start_end_pairs.npy generated for 100 episodes.")
+import os
+os.makedirs("data", exist_ok=True)
+np.save("data/random_start_end_pairs.npy", np.array(random_pairs, dtype=object))
+print("random_start_end_pairs.npy generated for 100 episodes in data/ folder.")

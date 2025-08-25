@@ -67,10 +67,10 @@ def plot_metric(metric_pid, metric_rl, name, ylabel):
 	plt.close()
 
 def main():
-	pid_actual = np.load('pid_actual_positions_episodes.npy', allow_pickle=True)
-	pid_desired = np.load('pid_desired_positions_episodes.npy', allow_pickle=True)
-	rl_actual = np.load('rl_actual_positions_episodes.npy', allow_pickle=True)
-	rl_desired = np.load('rl_desired_positions_episodes.npy', allow_pickle=True)
+	pid_actual = np.load('data/pid_actual_positions_episodes.npy', allow_pickle=True)
+	pid_desired = np.load('data/pid_desired_positions_episodes.npy', allow_pickle=True)
+	rl_actual = np.load('data/rl_actual_positions_episodes.npy', allow_pickle=True)
+	rl_desired = np.load('data/rl_desired_positions_episodes.npy', allow_pickle=True)
 
 	pid_rmse, pid_rise, pid_settle = analyze_episodes(pid_actual, pid_desired)
 	rl_rmse, rl_rise, rl_settle = analyze_episodes(rl_actual, rl_desired)

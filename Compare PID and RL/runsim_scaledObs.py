@@ -29,9 +29,9 @@ except:
 
 # Use the same random pairs as PID controller
 import os
-random_pairs_file = "random_start_end_pairs.npy"
+random_pairs_file = "data/random_start_end_pairs.npy"
 if not os.path.exists(random_pairs_file):
-    raise FileNotFoundError("random_start_end_pairs.npy not found. Run the PID script first to generate it.")
+    raise FileNotFoundError("data/random_start_end_pairs.npy not found. Run the PID script first to generate it.")
 random_pairs = np.load(random_pairs_file, allow_pickle=True)
 
 for ep in range(NUM_EPISODES):
@@ -55,6 +55,6 @@ for ep in range(NUM_EPISODES):
     all_desired.append(np.array(desired_positions))
     print(f"Episode {ep+1}/{NUM_EPISODES} finished, steps: {len(actual_positions)}")
 
-np.save("rl_actual_positions_episodes.npy", np.array(all_actual, dtype=object))
-np.save("rl_desired_positions_episodes.npy", np.array(all_desired, dtype=object))
-print("Saved RL data for all episodes.")
+np.save("data/rl_actual_positions_episodes.npy", np.array(all_actual, dtype=object))
+np.save("data/rl_desired_positions_episodes.npy", np.array(all_desired, dtype=object))
+print("Saved RL data for all episodes in data/ folder.")
