@@ -12,7 +12,6 @@ Modified by Methsara Shamika in year 2025
 from quadPlot import plot_quad_3d
 import pid_controller as pid  
 
-import trajGen
 import trajGen3D
 from model.quadcopter import Quadcopter
 import numpy as np
