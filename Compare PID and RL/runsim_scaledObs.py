@@ -11,13 +11,13 @@ from rl_env_scaledObs import WaypointQuadEnv
 import numpy as np
 
 NUM_EPISODES = 100
-MAX_STEPS = 600
+MAX_STEPS = 1200
 
 all_actual = []
 all_desired = []
 
 try:
-    model = PPO.load("checkpoints_from_8_6M/ppo_model_2300000_steps.zip", custom_objects={
+    model = PPO.load("Compare PID and RL/Best_model/ppo_model_2300000_steps.zip", custom_objects={
         "clip_range": 0.2,
         "lr_schedule": 0.0003
     })
@@ -29,9 +29,9 @@ except:
 
 # Use the same random pairs as PID controller
 import os
-random_pairs_file = "data/random_start_end_pairs.npy"
+random_pairs_file = "Compare PID and RL/data/random_start_end_pairs.npy"
 if not os.path.exists(random_pairs_file):
-    raise FileNotFoundError("data/random_start_end_pairs.npy not found. Run the PID script first to generate it.")
+    raise FileNotFoundError("Compare PID and RL/data/random_start_end_pairs.npy not found. Run the PID script first to generate it.")
 random_pairs = np.load(random_pairs_file, allow_pickle=True)
 
 for ep in range(NUM_EPISODES):
@@ -55,6 +55,6 @@ for ep in range(NUM_EPISODES):
     all_desired.append(np.array(desired_positions))
     print(f"Episode {ep+1}/{NUM_EPISODES} finished, steps: {len(actual_positions)}")
 
-np.save("data/rl_actual_positions_episodes.npy", np.array(all_actual, dtype=object))
-np.save("data/rl_desired_positions_episodes.npy", np.array(all_desired, dtype=object))
+np.save("Compare PID and RL/data/rl_actual_positions_episodes.npy", np.array(all_actual, dtype=object))
+np.save("Compare PID and RL/data/rl_desired_positions_episodes.npy", np.array(all_desired, dtype=object))
 print("Saved RL data for all episodes in data/ folder.")

@@ -16,5 +16,5 @@ for _ in range(NUM_EPISODES):
     random_pairs.append((start_pos, end_pos))
 import os
 os.makedirs("data", exist_ok=True)
-np.save("data/random_start_end_pairs.npy", np.array(random_pairs, dtype=object))
+np.save("Compare PID and RL/data/random_start_end_pairs.npy", np.array(random_pairs, dtype=object))
 print("random_start_end_pairs.npy generated for 100 episodes in data/ folder.")
