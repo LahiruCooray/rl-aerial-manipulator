@@ -2,6 +2,15 @@
 <sdf version="1.9">
   <world name="default">
     
+    <!-- Spherical coordinates for GPS -->
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>37.4223</latitude_deg>
+      <longitude_deg>-122.0844</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    
     <!-- Add proper lighting -->
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>
@@ -59,7 +68,7 @@
 
     <!-- Your hexacopter -->
     <include>
-      <uri>model://f550</uri>
+      <uri>file://f550</uri>
       <pose>0 0 0.3 0 0 0</pose>
     </include>
     
