@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
-<sdf version="1.5">
+<sdf version="1.9">
   <model name="f550">
     <static>false</static>
-    <pose>0 0 0.35 0 0 0</pose>
+    <pose>0 0 0 0 0 0</pose>
 
 <!-- ######################################## LOWER_PLATE # ######################################## -->
     <link name="base_link">
@@ -10,7 +10,7 @@
 	<pose>0 0 0.0015 0 0 0</pose>
 	
       <inertial>
-        <pose frame=''>0.001005 0 -0.0090035 0 -0 0</pose>
+  <pose>0.00 0 -0.00 0 -0 0</pose>
         <mass>0.6</mass>
         <inertia>
           <ixx>0.011</ixx>
@@ -142,7 +142,7 @@
       </sensor>
 
       <!-- RGB Camera Sensor at ~15 Hz -->
-      <sensor name="camera_sensor" type="camera">
+      <!-- <sensor name="camera_sensor" type="camera">
         <pose>0.1 0 0.05 0 0 0</pose>
         <always_on>true</always_on>
         <update_rate>15</update_rate>
@@ -163,7 +163,7 @@
             <stddev>0.007</stddev>
           </noise>
         </camera>
-      </sensor>
+      </sensor> -->
     </link>
 <!-- ####################################### /LOWER_PLATE # ######################################## -->
 
@@ -224,7 +224,7 @@
 <!-- ####################################### /TOP_PLATE ############################################ -->
 
 <!-- ##########################################  CAMERA  ########################################### -->
-    <link name='camera_down_link'>
+    <!-- <link name='camera_down_link'>
       <pose>0 0 0 0 1.57079 3.14159265359</pose>
       
 	  <inertial>
@@ -279,7 +279,7 @@
             <far>100</far>
           </clip>
         </camera>
-        <!-- <plugin name='camera_plugin' filename='libgazebo_ros_camera.so'>
+        <plugin name='camera_plugin' filename='libgazebo_ros_camera.so'>
           <alwaysOn>true</alwaysOn>
           <imageTopicName>image_raw_down</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
@@ -297,7 +297,7 @@
           <distortionT1>0.0</distortionT1>
           <distortionT2>0.0</distortionT2>
           <robotNamespace>/</robotNamespace>
-        </plugin> -->
+        </plugin>
       </sensor>
 
     </link>
@@ -305,15 +305,15 @@
 	<joint name='camera_down_joint' type='fixed'>
         <parent>base_link</parent>
         <child>camera_down_link</child>
-	</joint>
+	</joint> -->
 
 <!-- ##########################################  /CAMERA  ########################################## -->
 
 <!-- ##########################################  IMU  ############################################## -->
     <link name='imu_link'>
-      <pose frame=''>0 0 0 0 0 3.1415927</pose>
+      <pose>0 0 0 0 0 3.1415927</pose>
       <inertial>
-        <pose frame=''>0 0 0 0 -0 0</pose>
+        <pose>0 0 0 0 -0 0</pose>
         <mass>0.015</mass>
         <inertia>
           <ixx>1e-05</ixx>
@@ -326,7 +326,7 @@
       </inertial>
 
       <visual name="visual_imu">
-	      <pose frame=''>0 0 0 0 0 3.1415927</pose>
+	      <pose>0 0 0 0 0 3.1415927</pose>
         <geometry>
           <box>
 			<size>0.01 0.02 0.02</size>
@@ -335,23 +335,9 @@
       </visual>
     </link>
 
-    <joint name='imu_joint' type='revolute'>
+    <joint name='imu_joint' type='fixed'>
       <child>imu_link</child>
       <parent>base_link</parent>
-      <axis>
-        <xyz>1 0 0</xyz>
-        <limit>
-          <lower>0</lower>
-          <upper>0</upper>
-          <effort>0</effort>
-          <velocity>0</velocity>
-        </limit>
-        <dynamics>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-        </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
-      </axis>
     </joint>
 <!-- #########################################  /IMU  ############################################## -->
 
@@ -759,7 +745,7 @@
 
 <!-- #########################################  ROTOR0  ############################################ -->
 <link name='rotor_0'>
-      <pose frame=''>-0.279726205 0.1615 0.07 0 0 2.09439510239</pose>
+  <pose>-0.279726205 0.1615 0.07 0 0 2.09439510239</pose>
       <inertial>
         <mass>0.005</mass>
         <inertia>
@@ -808,17 +794,18 @@
       <child>rotor_0</child>
       <parent>base_link</parent>
       <axis>
-        <xyz>0.046 0.0827 1.8977</xyz>
+  <xyz expressed_in="__model__">0 0 1</xyz>
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
-          <effort>10</effort>
-          <velocity>-1</velocity>
+          <!-- Increased effort limit to avoid artificial torque saturation during spin-up/control -->
+          <effort>100000</effort>
+          <!-- Set a large positive velocity limit to avoid artificial clamping -->
+          <velocity>4000</velocity>
         </limit>
         <dynamics>
           <damping>0.005</damping>
         </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
       <physics>
         <ode>
@@ -830,7 +817,7 @@
 
 <!-- #########################################  ROTOR1  ############################################ -->
 <link name='rotor_1'>
-      <pose frame=''>0.279726205 -0.1615 0.07 0 0 -2.09439510239</pose>
+  <pose>0.279726205 -0.1615 0.07 0 0 -2.09439510239</pose>
       <inertial>
         <mass>0.005</mass>
         <inertia>
@@ -879,17 +866,16 @@
       <child>rotor_1</child>
       <parent>base_link</parent>
       <axis>
-        <xyz>0.046 0.0827 1.8977</xyz>
+  <xyz expressed_in="__model__">0 0 1</xyz>
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
-          <effort>10</effort>
-          <velocity>-1</velocity>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
         </limit>
         <dynamics>
           <damping>0.005</damping>
         </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
       <physics>
         <ode>
@@ -901,7 +887,7 @@
 
 <!-- #########################################  ROTOR2  ############################################ -->
 <link name='rotor_2'>
-      <pose frame=''>-0.279726205 -0.1615 0.07 0 0 2.09439510239</pose>
+  <pose>-0.279726205 -0.1615 0.07 0 0 2.09439510239</pose>
       <inertial>
         <mass>0.005</mass>
         <inertia>
@@ -950,17 +936,16 @@
       <child>rotor_2</child>
       <parent>base_link</parent>
       <axis>
-        <xyz>0.046 0.0827 1.8977</xyz>
+  <xyz expressed_in="__model__">0 0 1</xyz>
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
-          <effort>10</effort>
-          <velocity>-1</velocity>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
         </limit>
         <dynamics>
           <damping>0.005</damping>
         </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
       <physics>
         <ode>
@@ -972,7 +957,7 @@
 
 <!-- #########################################  ROTOR3  ############################################ -->
 <link name='rotor_3'>
-      <pose frame=''>0.279726205 0.1615 0.07 0 0 0</pose>
+  <pose>0.279726205 0.1615 0.07 0 0 0</pose>
       <inertial>
         <mass>0.005</mass>
         <inertia>
@@ -1021,17 +1006,16 @@
       <child>rotor_3</child>
       <parent>base_link</parent>
       <axis>
-        <xyz>0.046 0.0827 1.8977</xyz>
+  <xyz expressed_in="__model__">0 0 1</xyz>
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
-          <effort>10</effort>
-          <velocity>-1</velocity>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
         </limit>
         <dynamics>
           <damping>0.005</damping>
         </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
       <physics>
         <ode>
@@ -1043,7 +1027,7 @@
 
 <!-- #########################################  ROTOR4  ############################################ -->
 <link name='rotor_4'>
-      <pose frame=''>0 0.323 0.07 0 0 0</pose>
+  <pose>0 0.323 0.07 0 0 0</pose>
       <inertial>
         <mass>0.005</mass>
         <inertia>
@@ -1092,17 +1076,16 @@
       <child>rotor_4</child>
       <parent>base_link</parent>
       <axis>
-        <xyz>0.046 0.0827 1.8977</xyz>
+  <xyz expressed_in="__model__">0 0 1</xyz>
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
-          <effort>10</effort>
-          <velocity>-1</velocity>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
         </limit>
         <dynamics>
           <damping>0.005</damping>
         </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
       <physics>
         <ode>
@@ -1114,7 +1097,7 @@
 
 <!-- #########################################  ROTOR5  ############################################ -->
 <link name='rotor_5'>
-      <pose frame=''>0 -0.323 0.07 0 0 -2.09439510239</pose>
+  <pose>0 -0.323 0.07 0 0 -2.09439510239</pose>
       <inertial>
         <mass>0.005</mass>
         <inertia>
@@ -1148,7 +1131,8 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>file://f550/meshes/prop_ccw_CG.stl</uri>
+            <!-- Use clockwise prop mesh to alternate torque (rotors 0,3,5 cw; 1,2,4 ccw) -->
+            <uri>file://f550/meshes/prop_cw_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -1163,17 +1147,16 @@
       <child>rotor_5</child>
       <parent>base_link</parent>
       <axis>
-        <xyz>0.046 0.0827 1.8977</xyz>
+  <xyz expressed_in="__model__">0 0 1</xyz>
         <limit>
           <lower>-1e+16</lower>
           <upper>1e+16</upper>
-          <effort>10</effort>
-          <velocity>-1</velocity>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
         </limit>
         <dynamics>
           <damping>0.005</damping>
         </dynamics>
-        <use_parent_model_frame>1</use_parent_model_frame>
       </axis>
       <physics>
         <ode>
@@ -1294,11 +1277,11 @@
 					<friction>0.5</friction>
 				</dynamics>
 			</axis>
-			<physics>
-				<ode>
-					<implicit_spring_damper>1</implicit_spring_damper>'
-				</ode>
-			</physics>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
         </joint>
 
 <!-- ######################################### /grip1 ############################################### -->
@@ -1414,11 +1397,11 @@
 					<friction>0.5</friction>
 				</dynamics>
 			</axis>
-			<physics>
-				<ode>
-					<implicit_spring_damper>1</implicit_spring_damper>'
-				</ode>
-			</physics>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
         </joint>
 
 <!-- ######################################### /grip2 ############################################### -->
@@ -1534,11 +1517,11 @@
 					<friction>0.5</friction>
 				</dynamics>
 			</axis>
-			<physics>
-				<ode>
-					<implicit_spring_damper>1</implicit_spring_damper>'
-				</ode>
-			</physics>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
         </joint>
 
 <!-- ######################################### /grip3 ############################################### -->
@@ -1654,11 +1637,11 @@
 					<friction>0.5</friction>
 				</dynamics>
 			</axis>
-			<physics>
-				<ode>
-					<implicit_spring_damper>1</implicit_spring_damper>'
-				</ode>
-			</physics>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
         </joint>
 
 <!-- ######################################### /grip4 ############################################### -->
@@ -1774,11 +1757,11 @@
 					<friction>0.5</friction>
 				</dynamics>
 			</axis>
-			<physics>
-				<ode>
-					<implicit_spring_damper>1</implicit_spring_damper>'
-				</ode>
-			</physics>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
         </joint>
 
 <!-- ######################################### /grip5 ############################################### -->
@@ -1894,14 +1877,118 @@
 					<friction>0.5</friction>
 				</dynamics>
 			</axis>
-			<physics>
-				<ode>
-					<implicit_spring_damper>1</implicit_spring_damper>'
-				</ode>
-			</physics>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
         </joint>
 
         <!-- motor plugins -->
+
+        <!-- Gazebo Harmonic Multicopter motor model plugins -->
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>f550</robotNamespace>
+          <jointName>rotor_0_joint</jointName>
+          <linkName>rotor_0</linkName>
+          <turningDirection>cw</turningDirection>
+          <timeConstantUp>0.0182</timeConstantUp>
+          <timeConstantDown>0.0182</timeConstantDown>
+          <maxRotVelocity>1744.0</maxRotVelocity>
+          <motorConstant>1.91e-05</motorConstant>
+          <momentConstant>0.0185</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>0</actuator_number>
+          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
+          <rollingMomentCoefficient>0</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>f550</robotNamespace>
+          <jointName>rotor_1_joint</jointName>
+          <linkName>rotor_1</linkName>
+          <turningDirection>ccw</turningDirection>
+          <timeConstantUp>0.0182</timeConstantUp>
+          <timeConstantDown>0.0182</timeConstantDown>
+          <maxRotVelocity>1744.0</maxRotVelocity>
+          <motorConstant>1.91e-05</motorConstant>
+          <momentConstant>0.0185</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>1</actuator_number>
+          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
+          <rollingMomentCoefficient>0</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>f550</robotNamespace>
+          <jointName>rotor_2_joint</jointName>
+          <linkName>rotor_2</linkName>
+          <turningDirection>ccw</turningDirection>
+          <timeConstantUp>0.0182</timeConstantUp>
+          <timeConstantDown>0.0182</timeConstantDown>
+          <maxRotVelocity>1744.0</maxRotVelocity>
+          <motorConstant>1.91e-05</motorConstant>
+          <momentConstant>0.0185</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>2</actuator_number>
+          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
+          <rollingMomentCoefficient>0</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>f550</robotNamespace>
+          <jointName>rotor_3_joint</jointName>
+          <linkName>rotor_3</linkName>
+          <turningDirection>cw</turningDirection>
+          <timeConstantUp>0.0182</timeConstantUp>
+          <timeConstantDown>0.0182</timeConstantDown>
+          <maxRotVelocity>1744.0</maxRotVelocity>
+          <motorConstant>1.91e-05</motorConstant>
+          <momentConstant>0.0185</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>3</actuator_number>
+          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
+          <rollingMomentCoefficient>0</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>f550</robotNamespace>
+          <jointName>rotor_4_joint</jointName>
+          <linkName>rotor_4</linkName>
+          <turningDirection>ccw</turningDirection>
+          <timeConstantUp>0.0182</timeConstantUp>
+          <timeConstantDown>0.0182</timeConstantDown>
+          <maxRotVelocity>1744.0</maxRotVelocity>
+          <motorConstant>1.91e-05</motorConstant>
+          <momentConstant>0.0185</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>4</actuator_number>
+          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
+          <rollingMomentCoefficient>0</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>f550</robotNamespace>
+          <jointName>rotor_5_joint</jointName>
+          <linkName>rotor_5</linkName>
+          <turningDirection>cw</turningDirection>
+          <timeConstantUp>0.0182</timeConstantUp>
+          <timeConstantDown>0.0182</timeConstantDown>
+          <maxRotVelocity>1744.0</maxRotVelocity>
+          <motorConstant>1.91e-05</motorConstant>
+          <momentConstant>0.0185</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>5</actuator_number>
+          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
+          <rollingMomentCoefficient>0</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
 
         <!-- topic control -->
 
