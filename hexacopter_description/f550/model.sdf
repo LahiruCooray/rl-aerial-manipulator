@@ -45,103 +45,112 @@
         </material>
       </visual>
 
-      <!-- IMU Sensor at ~200 Hz -->
+      <!-- IMU Sensor (modeled after ICM-42688-P) -->
       <sensor name="imu_sensor" type="imu">
         <pose>0 0 0.02 0 0 0</pose>
-        <always_on>true</always_on>
-        <update_rate>200</update_rate>
+        <always_on>1</always_on>
+        <update_rate>250</update_rate>
         <imu>
           <angular_velocity>
             <x>
               <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
+                <mean>0</mean>
+                <stddev>0.0003394</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
               </noise>
             </x>
             <y>
               <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
+                <mean>0</mean>
+                <stddev>0.0003394</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
               </noise>
             </y>
             <z>
               <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
+                <mean>0</mean>
+                <stddev>0.0003394</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
               </noise>
             </z>
           </angular_velocity>
           <linear_acceleration>
             <x>
               <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.7e-2</stddev>
+                <mean>0</mean>
+                <stddev>0.004</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
               </noise>
             </x>
             <y>
               <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.7e-2</stddev>
+                <mean>0</mean>
+                <stddev>0.004</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
               </noise>
             </y>
             <z>
               <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.7e-2</stddev>
+                <mean>0</mean>
+                <stddev>0.004</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
               </noise>
             </z>
           </linear_acceleration>
         </imu>
       </sensor>
 
-      <!-- Air Pressure Sensor (Barometer) at ~50 Hz -->
+      <!-- Air Pressure Sensor (Barometer, modeled after BMP390) -->
       <sensor name="air_pressure_sensor" type="air_pressure">
-        <pose>0 0 0.025 0 0 0</pose>
-        <always_on>true</always_on>
+        <always_on>1</always_on>
         <update_rate>50</update_rate>
         <air_pressure>
-          <reference_altitude>0</reference_altitude>
+          <pressure>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </pressure>
         </air_pressure>
       </sensor>
 
-      <!-- GPS/NavSat Sensor at ~10 Hz -->
-      <sensor name="gps_sensor" type="navsat">
+      <!-- GPS/NavSat Sensor (simplified for compatibility) -->
+      <sensor name="navsat_sensor" type="navsat">
         <pose>0 0 0.03 0 0 0</pose>
-        <always_on>true</always_on>
-        <update_rate>10</update_rate>
-        <navsat>
-          <position_sensing>
-            <horizontal>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.0</stddev>
-              </noise>
-            </horizontal>
-            <vertical>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>1.0</stddev>
-              </noise>
-            </vertical>
-          </position_sensing>
-          <velocity_sensing>
-            <horizontal>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>0.1</stddev>
-              </noise>
-            </horizontal>
-            <vertical>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>0.1</stddev>
-              </noise>
-            </vertical>
-          </velocity_sensing>
-        </navsat>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
       </sensor>
 
-      <!-- RGB Camera Sensor at ~15 Hz -->
+      <!-- Magnetometer Sensor (modeled after IIS2MDC) -->
+      <sensor name="magnetometer_sensor" type="magnetometer">
+        <pose>0 0 0.02 0 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>100</update_rate>
+        <magnetometer>
+          <!-- 3mgauss RMS: NOTE: noise is in tesla but sensor reports data in gauss -->
+          <x>
+            <noise type="gaussian">
+              <stddev>0.0001</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <stddev>0.0001</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <stddev>0.0001</stddev>
+            </noise>
+          </z>
+        </magnetometer>
+      </sensor>      <!-- RGB Camera Sensor at ~15 Hz -->
       <!-- <sensor name="camera_sensor" type="camera">
         <pose>0.1 0 0.05 0 0 0</pose>
         <always_on>true</always_on>
@@ -758,7 +767,7 @@
         </inertia>
       </inertial>
 
-	  <collision name='rotor_0_collision'>
+      <collision name='rotor_0_collision'>
         <geometry>
           <cylinder>
             <length>0.005</length>
@@ -767,6 +776,7 @@
         </geometry>
         <surface>
           <contact>
+            <collide_bitmask>0x00</collide_bitmask>
             <ode/>
           </contact>
           <friction>
@@ -839,6 +849,7 @@
         </geometry>
         <surface>
           <contact>
+            <collide_bitmask>0x00</collide_bitmask>
             <ode/>
           </contact>
           <friction>
@@ -909,6 +920,7 @@
         </geometry>
         <surface>
           <contact>
+            <collide_bitmask>0x00</collide_bitmask>
             <ode/>
           </contact>
           <friction>
@@ -979,6 +991,7 @@
         </geometry>
         <surface>
           <contact>
+            <collide_bitmask>0x00</collide_bitmask>
             <ode/>
           </contact>
           <friction>
@@ -1049,6 +1062,7 @@
         </geometry>
         <surface>
           <contact>
+            <collide_bitmask>0x00</collide_bitmask>
             <ode/>
           </contact>
           <friction>
@@ -1119,6 +1133,7 @@
         </geometry>
         <surface>
           <contact>
+            <collide_bitmask>0x00</collide_bitmask>
             <ode/>
           </contact>
           <friction>
@@ -1887,245 +1902,116 @@
         <!-- motor plugins -->
 
         <!-- Gazebo Harmonic Multicopter motor model plugins -->
+        <!-- Motor: SunnySky X2216 KV1250, Battery: 4S LiPo (14.8V), Propeller: 11x5.7" CF -->
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550</robotNamespace>
+          <robotNamespace>f550_0</robotNamespace>
           <jointName>rotor_0_joint</jointName>
           <linkName>rotor_0</linkName>
           <turningDirection>cw</turningDirection>
-          <timeConstantUp>0.0182</timeConstantUp>
-          <timeConstantDown>0.0182</timeConstantDown>
-          <maxRotVelocity>1744.0</maxRotVelocity>
-          <motorConstant>1.91e-05</motorConstant>
-          <momentConstant>0.0185</momentConstant>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>0</actuator_number>
-          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
-          <rollingMomentCoefficient>0</rollingMomentCoefficient>
-          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550</robotNamespace>
+          <robotNamespace>f550_0</robotNamespace>
           <jointName>rotor_1_joint</jointName>
           <linkName>rotor_1</linkName>
           <turningDirection>ccw</turningDirection>
-          <timeConstantUp>0.0182</timeConstantUp>
-          <timeConstantDown>0.0182</timeConstantDown>
-          <maxRotVelocity>1744.0</maxRotVelocity>
-          <motorConstant>1.91e-05</motorConstant>
-          <momentConstant>0.0185</momentConstant>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>1</actuator_number>
-          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
-          <rollingMomentCoefficient>0</rollingMomentCoefficient>
-          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550</robotNamespace>
+          <robotNamespace>f550_0</robotNamespace>
           <jointName>rotor_2_joint</jointName>
           <linkName>rotor_2</linkName>
           <turningDirection>ccw</turningDirection>
-          <timeConstantUp>0.0182</timeConstantUp>
-          <timeConstantDown>0.0182</timeConstantDown>
-          <maxRotVelocity>1744.0</maxRotVelocity>
-          <motorConstant>1.91e-05</motorConstant>
-          <momentConstant>0.0185</momentConstant>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>2</actuator_number>
-          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
-          <rollingMomentCoefficient>0</rollingMomentCoefficient>
-          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550</robotNamespace>
+          <robotNamespace>f550_0</robotNamespace>
           <jointName>rotor_3_joint</jointName>
           <linkName>rotor_3</linkName>
           <turningDirection>cw</turningDirection>
-          <timeConstantUp>0.0182</timeConstantUp>
-          <timeConstantDown>0.0182</timeConstantDown>
-          <maxRotVelocity>1744.0</maxRotVelocity>
-          <motorConstant>1.91e-05</motorConstant>
-          <momentConstant>0.0185</momentConstant>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>3</actuator_number>
-          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
-          <rollingMomentCoefficient>0</rollingMomentCoefficient>
-          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550</robotNamespace>
+          <robotNamespace>f550_0</robotNamespace>
           <jointName>rotor_4_joint</jointName>
           <linkName>rotor_4</linkName>
           <turningDirection>ccw</turningDirection>
-          <timeConstantUp>0.0182</timeConstantUp>
-          <timeConstantDown>0.0182</timeConstantDown>
-          <maxRotVelocity>1744.0</maxRotVelocity>
-          <motorConstant>1.91e-05</motorConstant>
-          <momentConstant>0.0185</momentConstant>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>4</actuator_number>
-          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
-          <rollingMomentCoefficient>0</rollingMomentCoefficient>
-          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550</robotNamespace>
+          <robotNamespace>f550_0</robotNamespace>
           <jointName>rotor_5_joint</jointName>
           <linkName>rotor_5</linkName>
           <turningDirection>cw</turningDirection>
-          <timeConstantUp>0.0182</timeConstantUp>
-          <timeConstantDown>0.0182</timeConstantDown>
-          <maxRotVelocity>1744.0</maxRotVelocity>
-          <motorConstant>1.91e-05</motorConstant>
-          <momentConstant>0.0185</momentConstant>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>5</actuator_number>
-          <rotorDragCoefficient>2.0e-04</rotorDragCoefficient>
-          <rollingMomentCoefficient>0</rollingMomentCoefficient>
-          <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
           <motorType>velocity</motorType>
         </plugin>
 
         <!-- topic control -->
 
         <!-- ign topic -t /f550/command/motor_speed -m ignition.msgs.Actuators -p 'velocity:[700, 700, 700, 700, 700, 700]' -->
-       
-        <!-- <plugin filename="multicopter-motor-model-system-shutdown.so"
-        name="gz::sim::systems::MulticopterMotorModel">
-        <robotNamespace>f550</robotNamespace>
-        <jointName>rotor_0_joint</jointName>
-        <linkName>rotor_0</linkName>
-        <turningDirection>ccw</turningDirection>
-        <timeConstantUp>0.0182</timeConstantUp>
-        <timeConstantDown>0.0182</timeConstantDown>
-        <maxRotVelocity>1000.0</maxRotVelocity>
-        <motorConstant>1.269e-05</motorConstant>
-        <momentConstant>0.016754</momentConstant>
-        <commandSubTopic>command/motor_speed</commandSubTopic>
-        <shutdownSubTopic>shutdown</shutdownSubTopic>
-        <motorNumber>0</motorNumber>
-        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
-        <rotorDragCoefficient>0</rotorDragCoefficient>
-        <rollingMomentCoefficient>0</rollingMomentCoefficient>
-        <motorSpeedPubTopic>motor_speed/0</motorSpeedPubTopic>
-        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
-        <motorType>velocity</motorType>
-      </plugin>
-      <plugin filename="multicopter-motor-model-system-shutdown.so"
-        name="gz::sim::systems::MulticopterMotorModel">
-        <robotNamespace>f550</robotNamespace>
-        <jointName>rotor_1_joint</jointName>
-        <linkName>rotor_1</linkName>
-        <turningDirection>cw</turningDirection>
-        <timeConstantUp>0.0182</timeConstantUp>
-        <timeConstantDown>0.0182</timeConstantDown>
-        <maxRotVelocity>1000.0</maxRotVelocity>
-        <motorConstant>1.269e-05</motorConstant>
-        <momentConstant>0.016754</momentConstant>
-        <commandSubTopic>command/motor_speed</commandSubTopic>
-        <shutdownSubTopic>shutdown</shutdownSubTopic>
-        <motorNumber>1</motorNumber>
-        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
-        <rotorDragCoefficient>0</rotorDragCoefficient>
-        <rollingMomentCoefficient>0</rollingMomentCoefficient>
-        <motorSpeedPubTopic>motor_speed/1</motorSpeedPubTopic>
-        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
-        <motorType>velocity</motorType>
-      </plugin>
-      <plugin filename="multicopter-motor-model-system-shutdown.so"
-        name="gz::sim::systems::MulticopterMotorModel">
-        <robotNamespace>f550</robotNamespace>
-        <jointName>rotor_2_joint</jointName>
-        <linkName>rotor_2</linkName>
-        <turningDirection>ccw</turningDirection>
-        <timeConstantUp>0.0182</timeConstantUp>
-        <timeConstantDown>0.0182</timeConstantDown>
-        <maxRotVelocity>1000.0</maxRotVelocity>
-        <motorConstant>1.269e-05</motorConstant>
-        <momentConstant>0.016754</momentConstant>
-        <commandSubTopic>command/motor_speed</commandSubTopic>
-        <shutdownSubTopic>shutdown</shutdownSubTopic>
-        <motorNumber>2</motorNumber>
-        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
-        <rotorDragCoefficient>0</rotorDragCoefficient>
-        <rollingMomentCoefficient>0</rollingMomentCoefficient>
-        <motorSpeedPubTopic>motor_speed/2</motorSpeedPubTopic>
-        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
-        <motorType>velocity</motorType>
-      </plugin>
-      <plugin filename="multicopter-motor-model-system-shutdown.so"
-        name="gz::sim::systems::MulticopterMotorModel">
-        <robotNamespace>f550</robotNamespace>
-        <jointName>rotor_3_joint</jointName>
-        <linkName>rotor_3</linkName>
-        <turningDirection>cw</turningDirection>
-        <timeConstantUp>0.0182</timeConstantUp>
-        <timeConstantDown>0.0182</timeConstantDown>
-        <maxRotVelocity>1000.0</maxRotVelocity>
-        <motorConstant>1.269e-05</motorConstant>
-        <momentConstant>0.016754</momentConstant>
-        <commandSubTopic>command/motor_speed</commandSubTopic>
-        <shutdownSubTopic>shutdown</shutdownSubTopic>
-        <motorNumber>3</motorNumber>
-        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
-        <rotorDragCoefficient>0</rotorDragCoefficient>
-        <rollingMomentCoefficient>0</rollingMomentCoefficient>
-        <motorSpeedPubTopic>motor_speed/3</motorSpeedPubTopic>
-        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
-        <motorType>velocity</motorType>
-      </plugin>
-      <plugin filename="multicopter-motor-model-system-shutdown.so"
-        name="gz::sim::systems::MulticopterMotorModel">
-        <robotNamespace>f550</robotNamespace>
-        <jointName>rotor_4_joint</jointName>
-        <linkName>rotor_4</linkName>
-        <turningDirection>ccw</turningDirection>
-        <timeConstantUp>0.0182</timeConstantUp>
-        <timeConstantDown>0.0182</timeConstantDown>
-        <maxRotVelocity>1000.0</maxRotVelocity>
-        <motorConstant>1.269e-05</motorConstant>
-        <momentConstant>0.016754</momentConstant>
-        <commandSubTopic>command/motor_speed</commandSubTopic>
-        <shutdownSubTopic>shutdown</shutdownSubTopic>
-        <motorNumber>4</motorNumber>
-        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
-        <rotorDragCoefficient>0</rotorDragCoefficient>
-        <rollingMomentCoefficient>0</rollingMomentCoefficient>
-        <motorSpeedPubTopic>motor_speed/4</motorSpeedPubTopic>
-        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
-        <motorType>velocity</motorType>
-      </plugin>
-      <plugin filename="multicopter-motor-model-system-shutdown.so"
-        name="gz::sim::systems::MulticopterMotorModel">
-        <robotNamespace>f550</robotNamespace>
-        <jointName>rotor_5_joint</jointName>
-        <linkName>rotor_5</linkName>
-        <turningDirection>cw</turningDirection>
-        <timeConstantUp>0.0182</timeConstantUp>
-        <timeConstantDown>0.0182</timeConstantDown>
-        <maxRotVelocity>1000.0</maxRotVelocity>
-        <motorConstant>1.269e-05</motorConstant>
-        <momentConstant>0.016754</momentConstant>
-        <commandSubTopic>command/motor_speed</commandSubTopic>
-        <shutdownSubTopic>shutdown</shutdownSubTopic>
-        <motorNumber>5</motorNumber>
-        <rotorDragCoefficient>2.0673e-04</rotorDragCoefficient>
-        <rotorDragCoefficient>0</rotorDragCoefficient>
-        <rollingMomentCoefficient>0</rollingMomentCoefficient>
-        <motorSpeedPubTopic>motor_speed/5</motorSpeedPubTopic>
-        <rotorVelocitySlowdownSim>2</rotorVelocitySlowdownSim>
-        <motorType>velocity</motorType>
-      </plugin> -->
 
-    <!-- Model-level plugins for all sensors -->
-    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"/>
-    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
-    <plugin filename="gz-sim-air-pressure-system" name="gz::sim::systems::AirPressure"/>
-    <plugin filename="gz-sim-navsat-system" name="gz::sim::systems::NavSat"/>
+    <!-- Sensor system plugins are provided by PX4 gz_bridge (server.config). -->
+    <!-- Avoid loading them here to prevent duplicate publications. -->
 
   </model>
 </sdf>
