@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# @name F550 Hexarotor X (Custom)
+# @type Hexarotor x
+#
+
+. ${R}etc/init.d/rc.mc_defaults
+
+# Gazebo configuration
+PX4_SIMULATOR=${PX4_SIMULATOR:=gz}
+PX4_GZ_WORLD=${PX4_GZ_WORLD:=default}
+PX4_SIM_MODEL=${PX4_SIM_MODEL:=f550}
+
+# Enable Gazebo
+param set-default SIM_GZ_EN 1
+
+# Airframe type
+param set-default CA_AIRFRAME 0
+param set-default CA_ROTOR_COUNT 6
+param set-default SYS_AUTOSTART 6012
+
+# Motor positions (Gazebo ENU converted to PX4 FRD: x forward, y right)
+# Motor 0: Back Left (rotor_0 in SDF) - CW → NEGATIVE KM
+param set-default CA_ROTOR0_PX -0.279726
+param set-default CA_ROTOR0_PY -0.1615
+param set-default CA_ROTOR0_KM -0.05
+
+# Motor 1: Front Right (rotor_1 in SDF) - CCW → POSITIVE KM
+param set-default CA_ROTOR1_PX 0.279726
+param set-default CA_ROTOR1_PY 0.1615
+param set-default CA_ROTOR1_KM 0.05
+
+# Motor 2: Back Right (rotor_2 in SDF) - CCW → POSITIVE KM
+param set-default CA_ROTOR2_PX -0.279726
+param set-default CA_ROTOR2_PY 0.1615
+param set-default CA_ROTOR2_KM 0.05
+
+# Motor 3: Front Left (rotor_3 in SDF) - CW → NEGATIVE KM
+param set-default CA_ROTOR3_PX 0.279726
+param set-default CA_ROTOR3_PY -0.1615
+param set-default CA_ROTOR3_KM -0.05
+
+# Motor 4: Front Center (rotor_4 in SDF at Y=0.323) - CCW → POSITIVE KM
+param set-default CA_ROTOR4_PX 0.0
+param set-default CA_ROTOR4_PY -0.323
+param set-default CA_ROTOR4_KM 0.05
+
+# Motor 5: Back Center (rotor_5 in SDF at Y=-0.323) - CW → NEGATIVE KM
+param set-default CA_ROTOR5_PX 0.0
+param set-default CA_ROTOR5_PY 0.323
+param set-default CA_ROTOR5_KM -0.05
+
+# Gazebo actuator mapping
+param set-default SIM_GZ_EC_FUNC1 101
+param set-default SIM_GZ_EC_FUNC2 102
+param set-default SIM_GZ_EC_FUNC3 103
+param set-default SIM_GZ_EC_FUNC4 104
+param set-default SIM_GZ_EC_FUNC5 105
+param set-default SIM_GZ_EC_FUNC6 106
+
+# Motor speed limits (rad/s for your motors)
+param set-default SIM_GZ_EC_MIN1 150
+param set-default SIM_GZ_EC_MIN2 150
+param set-default SIM_GZ_EC_MIN3 150
+param set-default SIM_GZ_EC_MIN4 150
+param set-default SIM_GZ_EC_MIN5 150
+param set-default SIM_GZ_EC_MIN6 150
+
+param set-default SIM_GZ_EC_MAX1 1700
+param set-default SIM_GZ_EC_MAX2 1700
+param set-default SIM_GZ_EC_MAX3 1700
+param set-default SIM_GZ_EC_MAX4 1700
+param set-default SIM_GZ_EC_MAX5 1700
+param set-default SIM_GZ_EC_MAX6 1700
+
+# Flight tuning - CRITICAL for hexacopter stability
+param set-default MC_AIRMODE 1
+param set-default MPC_THR_HOVER 0.5
+param set-default MPC_MANTHR_MIN 0.08
+
+# Rate control gains - reduce for initial testing
+param set-default MC_ROLLRATE_P 0.15
+param set-default MC_PITCHRATE_P 0.15
+param set-default MC_YAWRATE_P 0.2
+
+param set-default MC_ROLLRATE_I 0.2
+param set-default MC_PITCHRATE_I 0.2
+param set-default MC_YAWRATE_I 0.1
+
+param set-default MC_ROLLRATE_D 0.003
+param set-default MC_PITCHRATE_D 0.003
+param set-default MC_YAWRATE_D 0.0
+
+# Attitude control
+param set-default MC_ROLL_P 6.5
+param set-default MC_PITCH_P 6.5
+param set-default MC_YAW_P 2.8
+
+# EKF2 settings
+param set-default EKF2_HGT_REF 1
+
+# Disable some failsafes for testing
+param set-default COM_ARM_WO_GPS 1
