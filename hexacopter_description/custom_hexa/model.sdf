@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.9">
-  <model name="f550">
+  <model name="custom_hexa">
     <static>false</static>
     <pose>0 0 0 0 0 0</pose>
 
@@ -38,7 +38,7 @@
         <geometry>
           <mesh>
             <scale>0.0014 0.0014 0.0014</scale>
-            <uri>file://f550/meshes/Lower_plate_CG.STL</uri>
+            <uri>file://custom_hexa/meshes/Lower_plate_CG.STL</uri>
           </mesh>
         </geometry>
         <material>  
@@ -220,7 +220,7 @@
         <geometry>
           <mesh>
             <scale>0.0014 0.0014 0.0014</scale>
-            <uri>file://f550/meshes/Top_plate_CG.STL</uri>
+            <uri>file://custom_hexa/meshes/Top_plate_CG.STL</uri>
           </mesh>
         </geometry>
         <material>  
@@ -269,7 +269,7 @@
 		<geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>file://f550/meshes/oCam-1MGN-U_CG.stl</uri>
+            <uri>file://custom_hexa/meshes/oCam-1MGN-U_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -685,7 +685,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>file://f550/meshes/prop_cw_CG.stl</uri>
+            <uri>file://custom_hexa/meshes/prop_cw_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -801,7 +801,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>file://f550/meshes/prop_ccw_CG.stl</uri>
+            <uri>file://custom_hexa/meshes/prop_ccw_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -914,7 +914,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>file://f550/meshes/prop_ccw_CG.stl</uri>
+            <uri>file://custom_hexa/meshes/prop_ccw_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -1027,7 +1027,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>file://f550/meshes/prop_cw_CG.stl</uri>
+            <uri>file://custom_hexa/meshes/prop_cw_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -1140,7 +1140,7 @@
         <geometry>
           <mesh>
             <scale>0.001 0.001 0.001</scale>
-            <uri>file://f550/meshes/prop_ccw_CG.stl</uri>
+            <uri>file://custom_hexa/meshes/prop_ccw_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -1254,7 +1254,7 @@
           <mesh>
             <scale>0.001 0.001 0.001</scale>
             <!-- Use clockwise prop mesh to alternate torque (rotors 0,3,5 cw; 1,2,4 ccw) -->
-            <uri>file://f550/meshes/prop_cw_CG.stl</uri>
+            <uri>file://custom_hexa/meshes/prop_cw_CG.stl</uri>
           </mesh>
         </geometry>
         <material>  
@@ -1629,7 +1629,7 @@
         <!-- Gazebo Harmonic Multicopter motor model plugins -->
         <!-- Motor: SunnySky X2216 KV1250, Battery: 4S LiPo (14.8V), Propeller: 11x5.7" CF -->
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550_0</robotNamespace>
+          <robotNamespace>custom_hexa_0</robotNamespace>
           <jointName>rotor_0_joint</jointName>
           <linkName>rotor_0</linkName>
           <turningDirection>cw</turningDirection>
@@ -1646,7 +1646,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550_0</robotNamespace>
+          <robotNamespace>custom_hexa_0</robotNamespace>
           <jointName>rotor_1_joint</jointName>
           <linkName>rotor_1</linkName>
           <turningDirection>ccw</turningDirection>
@@ -1663,7 +1663,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550_0</robotNamespace>
+          <robotNamespace>custom_hexa_0</robotNamespace>
           <jointName>rotor_2_joint</jointName>
           <linkName>rotor_2</linkName>
           <turningDirection>ccw</turningDirection>
@@ -1680,7 +1680,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550_0</robotNamespace>
+          <robotNamespace>custom_hexa_0</robotNamespace>
           <jointName>rotor_3_joint</jointName>
           <linkName>rotor_3</linkName>
           <turningDirection>cw</turningDirection>
@@ -1697,7 +1697,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550_0</robotNamespace>
+          <robotNamespace>custom_hexa_0</robotNamespace>
           <jointName>rotor_4_joint</jointName>
           <linkName>rotor_4</linkName>
           <turningDirection>ccw</turningDirection>
@@ -1714,7 +1714,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>f550_0</robotNamespace>
+          <robotNamespace>custom_hexa_0</robotNamespace>
           <jointName>rotor_5_joint</jointName>
           <linkName>rotor_5</linkName>
           <turningDirection>cw</turningDirection>

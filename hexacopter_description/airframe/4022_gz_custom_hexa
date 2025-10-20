@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# @name F550 Hexarotor X (Custom)
+# @name Custom Hexarotor X
 # @type Hexarotor x
 #
 
@@ -9,7 +9,7 @@
 # Gazebo configuration
 PX4_SIMULATOR=${PX4_SIMULATOR:=gz}
 PX4_GZ_WORLD=${PX4_GZ_WORLD:=default}
-PX4_SIM_MODEL=${PX4_SIM_MODEL:=f550}
+PX4_SIM_MODEL=${PX4_SIM_MODEL:=custom_hexa}
 
 # Enable Gazebo
 param set-default SIM_GZ_EN 1
