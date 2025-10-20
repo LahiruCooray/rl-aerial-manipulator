@@ -1,0 +1,1742 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <model name="custom_hexa">
+    <static>false</static>
+    <pose>0 0 0 0 0 0</pose>
+
+<!-- ######################################## LOWER_PLATE # ######################################## -->
+    <link name="base_link">
+	<gravity>true</gravity>
+	<pose>0 0 0.0015 0 0 0</pose>
+	
+      <inertial>
+        <!-- Combined base+top+battery+electronics modeled as a thick regular-hexagon prism -->
+        <!-- Parameters: M=1.9949 kg, circumradius R=0.15 m, thickness h=0.085 m -->
+        <!-- Ixx = Iyy = (5/24) M R^2 + (M h^2)/12;  Izz = (5/12) M R^2;  CoM at z = h/2 -->
+        <pose>0 0 0.0425 0 0 0</pose>
+        <mass>1.9949</mass>
+        <inertia>
+          <ixx>0.0105521906</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0105521906</iyy>
+          <iyz>0</iyz>
+          <izz>0.0187021875</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="base_link_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.15</radius>
+            <length>0.003</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <visual name="base_link_visual">
+        <geometry>
+          <mesh>
+            <scale>0.0014 0.0014 0.0014</scale>
+            <uri>file://custom_hexa/meshes/Lower_plate_CG.STL</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>0.9 0.9 0.9 1</ambient>
+          <diffuse>1.0 1.0 1.0 1</diffuse>
+          <specular>0.8 0.8 0.8 1</specular>
+        </material>
+      </visual>
+
+      <!-- IMU Sensor (modeled after ICM-42688-P) -->
+      <sensor name="imu_sensor" type="imu">
+        <pose>0 0 0.02 0 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>250</update_rate>
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.0003394</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.0003394</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.0003394</stddev>
+                <dynamic_bias_stddev>3.8785e-05</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>1000</dynamic_bias_correlation_time>
+              </noise>
+            </z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.004</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.004</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0</mean>
+                <stddev>0.004</stddev>
+                <dynamic_bias_stddev>0.006</dynamic_bias_stddev>
+                <dynamic_bias_correlation_time>300</dynamic_bias_correlation_time>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+
+      <!-- Air Pressure Sensor (Barometer, modeled after BMP390) -->
+      <sensor name="air_pressure_sensor" type="air_pressure">
+        <always_on>1</always_on>
+        <update_rate>50</update_rate>
+        <air_pressure>
+          <pressure>
+            <noise type="gaussian">
+              <mean>0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </pressure>
+        </air_pressure>
+      </sensor>
+
+      <!-- GPS/NavSat Sensor (simplified for compatibility) -->
+      <sensor name="navsat_sensor" type="navsat">
+        <pose>0 0 0.03 0 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+      </sensor>
+
+      <!-- Magnetometer Sensor (modeled after IIS2MDC) -->
+      <sensor name="magnetometer_sensor" type="magnetometer">
+        <pose>0 0 0.02 0 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>100</update_rate>
+        <magnetometer>
+          <!-- 3mgauss RMS: NOTE: noise is in tesla but sensor reports data in gauss -->
+          <x>
+            <noise type="gaussian">
+              <stddev>0.0001</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <stddev>0.0001</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <stddev>0.0001</stddev>
+            </noise>
+          </z>
+        </magnetometer>
+      </sensor>      <!-- RGB Camera Sensor at ~15 Hz -->
+      <!-- <sensor name="camera_sensor" type="camera">
+        <pose>0.1 0 0.05 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>15</update_rate>
+        <camera>
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+      </sensor> -->
+    </link>
+<!-- ####################################### /LOWER_PLATE # ######################################## -->
+
+
+<!--
+	<joint name="fixed to ground" type="fixed">
+		<parent>world</parent>
+		<child>base_link</child>
+	</joint>
+-->
+
+
+<!-- ######################################## TOP_PLATE ############################################ -->
+  <link name="Top_plate_link">
+  <gravity>true</gravity>
+  <pose>0 0 0.0865 0 0 2.09439510239</pose>
+	
+      <inertial>
+        <!-- Visual-only inertial; mass is accounted for in base_link -->
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.001</mass>
+        <inertia>
+          <ixx>1e-06</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1e-06</iyy>
+          <iyz>0</iyz>
+          <izz>1e-06</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="top_plate_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.12</radius>
+            <length>0.003</length>
+          </cylinder>
+        </geometry>
+      </collision>
+
+      <visual name="visual_Top_plate">
+        <geometry>
+          <mesh>
+            <scale>0.0014 0.0014 0.0014</scale>
+            <uri>file://custom_hexa/meshes/Top_plate_CG.STL</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>0.9 0.9 0.9 1</ambient>
+          <diffuse>1.0 1.0 1.0 1</diffuse>
+          <specular>0.9 0.9 0.9 1</specular>
+        </material>
+      </visual>
+    </link>
+
+	<joint name='Lower_Top_joint' type='fixed'>
+	  	<child>Top_plate_link</child>
+	  	<parent>base_link</parent>
+	</joint>
+<!-- ####################################### /TOP_PLATE ############################################ -->
+
+<!-- ##########################################  CAMERA  ########################################### -->
+    <!-- <link name='camera_down_link'>
+      <pose>0 0 0 0 1.57079 3.14159265359</pose>
+      
+	  <inertial>
+        <mass>0.001</mass>
+          <inertia>
+			<ixx>0.001</ixx>
+			<ixy>0</ixy>
+			<ixz>0</ixz>
+			<iyy>0.001</iyy>
+			<iyz>0</iyz>
+			<izz>0.001</izz>
+          </inertia>
+      </inertial>
+	  <gravity>1</gravity>
+	  <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+      
+      <collision name="camera_collision">
+        <geometry>
+          <box>
+            <size>0.025 0.025 0.015</size>
+          </box>
+        </geometry>
+      </collision>
+
+	  <visual name='visual_camera_down'>
+		<pose>0 0 0 0 -1.57079 0</pose>        
+		<geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>file://custom_hexa/meshes/oCam-1MGN-U_CG.stl</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>0.0 0.3 0.8 1</ambient>
+          <diffuse>0.0 0.4 1.0 1</diffuse>
+          <specular>0.8 0.8 0.8 1</specular>
+        </material>
+      </visual>
+     
+      <sensor name='camera' type='camera'>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <camera name='__default__'>
+          <horizontal_fov>1.13446</horizontal_fov>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <plugin name='camera_plugin' filename='libgazebo_ros_camera.so'>
+          <alwaysOn>true</alwaysOn>
+          <imageTopicName>image_raw_down</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <updateRate>10.0</updateRate>
+          <cameraName>uav_camera</cameraName>
+          <frameName>f550/robot_camera_down</frameName>
+          <CxPrime>640.5</CxPrime>
+          <Cx>640.5</Cx>
+          <Cy>360.5</Cy>
+          <hackBaseline>0</hackBaseline>
+          <focalLength>1004.603218</focalLength>
+          <distortionK1>0.0</distortionK1>
+          <distortionK2>0.0</distortionK2>
+          <distortionK3>0.0</distortionK3>
+          <distortionT1>0.0</distortionT1>
+          <distortionT2>0.0</distortionT2>
+          <robotNamespace>/</robotNamespace>
+        </plugin>
+      </sensor>
+
+    </link>
+
+	<joint name='camera_down_joint' type='fixed'>
+        <parent>base_link</parent>
+        <child>camera_down_link</child>
+	</joint> -->
+
+<!-- ##########################################  /CAMERA  ########################################## -->
+
+<!-- ##########################################  IMU  ############################################## -->
+    <link name='imu_link'>
+      <pose>0 0 0 0 0 3.1415927</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.001</mass>
+        <inertia>
+          <ixx>1e-06</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1e-06</iyy>
+          <iyz>0</iyz>
+          <izz>1e-06</izz>
+        </inertia>
+      </inertial>
+
+      <visual name="visual_imu">
+	      <pose>0 0 0 0 0 3.1415927</pose>
+        <geometry>
+          <box>
+			<size>0.01 0.02 0.02</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name='imu_joint' type='fixed'>
+      <child>imu_link</child>
+      <parent>base_link</parent>
+    </joint>
+<!-- #########################################  /IMU  ############################################## -->
+
+<!-- ############################################# ARM1 ############################################ -->
+  <link name="Arm1_link">
+  <gravity>true</gravity>
+  <pose>0 0.15 0.055 0 0 1.57079632679</pose>
+	
+	<inertial>
+    <pose>0.079425 0 -0.005 0 0 0</pose>
+    <mass>0.0126</mass>
+    <inertia>
+      <ixx>3.44e-07</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>2.66e-05</iyy>
+      <iyz>0</iyz>
+      <izz>2.66e-05</izz>
+    </inertia>
+  </inertial>
+
+  <collision name="collision_Arm1">
+    <pose>0.079425 0 -0.005 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.15885 0.01 0.01</size>
+      </box>
+    </geometry>
+  </collision>
+
+    <visual name="visual_Arm1">
+      <pose>0.079425 0 -0.005 0 0 0</pose>
+      <geometry>
+        <box>
+          <size>0.15885 0.01 0.01</size>
+        </box>
+      </geometry>
+      <material>  
+        <ambient>0.8 0.0 0.0 1</ambient>
+        <diffuse>1.0 0.0 0.0 1</diffuse>
+        <specular>0.5 0.5 0.5 1</specular>
+      </material>
+    </visual>
+	</link>
+
+	<joint name='Lower_Arm1_joint' type='fixed'>
+	  	<child>Arm1_link</child>
+	  	<parent>base_link</parent>
+	</joint>
+<!-- ############################################ /ARM1 ############################################ -->
+
+<!-- ############################################# ARM2 ############################################ -->
+  <link name="Arm2_link">
+  <gravity>true</gravity>
+  <pose>0.129903810567 0.075 0.055 0 0 0.523598775598</pose>
+	
+      <inertial>
+    	<pose>0.079425 0 -0.005 0 0 0</pose>
+        <mass>0.0126</mass>
+        <inertia>
+            <ixx>3.44e-07</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.66e-05</iyy>
+          <iyz>0</iyz>
+          <izz>2.66e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="collision_Arm2">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+
+
+      <visual name="visual_Arm2">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+        <material>  
+          <ambient>0.8 0.0 0.0 1</ambient>
+          <diffuse>1.0 0.0 0.0 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular>
+        </material>
+      </visual>
+    </link>
+
+	<joint name='Lower_Arm2_joint' type='fixed'>
+	  	<child>Arm2_link</child>
+	  	<parent>base_link</parent>
+	</joint>
+<!-- ############################################ /ARM2 ############################################ -->
+
+<!-- ############################################# ARM3 ############################################ -->
+  <link name="Arm3_link">
+  <gravity>true</gravity>
+  <pose>0.129903810567 -0.075 0.055 0 0 -0.523598775598</pose>
+	
+      <inertial>
+    	<pose>0.079425 0 -0.005 0 0 0</pose>
+        <mass>0.0126</mass>
+        <inertia>
+            <ixx>3.44e-07</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.66e-05</iyy>
+          <iyz>0</iyz>
+          <izz>2.66e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="collision_Arm3">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+
+
+      <visual name="visual_Arm3">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+        <material>  
+          <ambient>0.8 0.0 0.0 1</ambient>
+          <diffuse>1.0 0.0 0.0 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular>
+        </material>
+      </visual>
+    </link>
+
+	<joint name='Lower_Arm3_joint' type='fixed'>
+	  	<child>Arm3_link</child>
+	  	<parent>base_link</parent>
+	</joint>
+<!-- ############################################ /ARM3 ############################################ -->
+
+<!-- ############################################# ARM4 ############################################ -->
+  <link name="Arm4_link">
+  <gravity>true</gravity>
+  <pose>0 -0.15 0.055 0 0 -1.57079632679</pose>
+	
+      <inertial>
+    	<pose>0.079425 0 -0.005 0 0 0</pose>
+        <mass>0.0126</mass>
+        <inertia>
+            <ixx>3.44e-07</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.66e-05</iyy>
+          <iyz>0</iyz>
+          <izz>2.66e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="collision_Arm4">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+
+
+      <visual name="visual_Arm4">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+        <material>  
+          <ambient>0.8 0.0 0.0 1</ambient>
+          <diffuse>1.0 0.0 0.0 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular>
+        </material>
+      </visual>
+    </link>
+
+	<joint name='Lower_Arm4_joint' type='fixed'>
+	  	<child>Arm4_link</child>
+	  	<parent>base_link</parent>
+	</joint>
+<!-- ############################################ /ARM4 ############################################ -->
+
+<!-- ############################################# ARM5 ############################################ -->
+  <link name="Arm5_link">
+  <gravity>true</gravity>
+  <pose>-0.129903810567 -0.075 0.055 0 0 3.66519142919</pose>
+	
+      <inertial>
+    	<pose>0.079425 0 -0.005 0 0 0</pose>
+        <mass>0.0126</mass>
+        <inertia>
+            <ixx>3.44e-07</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.66e-05</iyy>
+          <iyz>0</iyz>
+          <izz>2.66e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="collision_Arm5">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+
+
+      <visual name="visual_Arm5">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+        <material>  
+          <ambient>0.8 0.0 0.0 1</ambient>
+          <diffuse>1.0 0.0 0.0 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular>
+        </material>
+      </visual>
+    </link>
+
+	<joint name='Lower_Arm5_joint' type='fixed'>
+	  	<child>Arm5_link</child>
+	  	<parent>base_link</parent>
+	</joint>
+<!-- ############################################ /ARM5 ############################################ -->
+
+<!-- ############################################# ARM6 ############################################ -->
+  <link name="Arm6_link">
+  <gravity>true</gravity>
+  <pose>-0.129903810567 0.075 0.055 0 0 2.61799387799</pose>
+	
+      <inertial>
+    	<pose>0.079425 0 -0.005 0 0 0</pose>
+        <mass>0.0126</mass>
+        <inertia>
+            <ixx>3.44e-07</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.66e-05</iyy>
+          <iyz>0</iyz>
+          <izz>2.66e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="collision_Arm6">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+      </collision>
+
+
+      <visual name="visual_Arm6">
+        <pose>0.079425 0 -0.005 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.15885 0.01 0.01</size>
+          </box>
+        </geometry>
+        <material>  
+          <ambient>0.8 0.0 0.0 1</ambient>
+          <diffuse>1.0 0.0 0.0 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular>
+        </material>
+      </visual>
+    </link>
+
+	<joint name='Lower_Arm6_joint' type='fixed'>
+	  	<child>Arm6_link</child>
+	  	<parent>base_link</parent>
+	</joint>
+<!-- ############################################ /ARM6 ############################################ -->
+
+<!-- #########################################  ROTOR0  ############################################ -->
+<link name='rotor_0'>
+  <pose>-0.255691 0.1475 0.093 0 0 2.09439510239</pose>
+      <inertial>
+        <mass>0.008</mass>
+        <inertia>
+          <ixx>5.205e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.667e-07</iyy>
+          <iyz>0</iyz>
+          <izz>5.230e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name='rotor_0_collision'>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.128</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <collide_bitmask>0x00</collide_bitmask>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name='rotor_0_visual'>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>file://custom_hexa/meshes/prop_cw_CG.stl</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>1.0 1.0 0.0 1</ambient>
+          <diffuse>1.0 1.0 0.2 1</diffuse>
+          <specular>0.8 0.8 0.0 1</specular>
+        </material>
+      </visual>
+    </link>
+
+    <joint name='rotor_0_joint' type='revolute'>
+      <child>rotor_0</child>
+      <parent>base_link</parent>
+      <axis>
+  <xyz expressed_in="__model__">0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+          <!-- Increased effort limit to avoid artificial torque saturation during spin-up/control -->
+          <effort>100000</effort>
+          <!-- Set a large positive velocity limit to avoid artificial clamping -->
+          <velocity>4000</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.005</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+<!-- ########################################  /ROTOR0  ############################################ -->
+
+<!-- ##########################################  MOTOR0  ############################################ -->
+  <link name='motor_0'>
+    <!-- Place at radius 0.295 and z=0.071 -->
+    <pose>-0.255691 0.1475 0.071 0 0 2.09439510239</pose>
+    <inertial>
+      <mass>0.072</mass>
+      <inertia>
+        <ixx>8.928e-06</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>8.928e-06</iyy>
+        <iyz>0</iyz>
+        <izz>7.056e-06</izz>
+      </inertia>
+    </inertial>
+    <collision name='motor_0_collision'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+    </collision>
+    <visual name='motor_0_visual'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+      <material>
+        <ambient>0.2 0.2 0.2 1</ambient>
+        <diffuse>0.3 0.3 0.3 1</diffuse>
+        <specular>0.6 0.6 0.6 1</specular>
+      </material>
+    </visual>
+  </link>
+  <joint name='base_motor_0' type='fixed'>
+    <child>motor_0</child>
+    <parent>base_link</parent>
+  </joint>
+
+
+<!-- #########################################  ROTOR1  ############################################ -->
+<link name='rotor_1'>
+  <pose>0.255691 -0.1475 0.093 0 0 -2.09439510239</pose>
+      <inertial>
+        <mass>0.008</mass>
+        <inertia>
+          <ixx>5.205e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.667e-07</iyy>
+          <iyz>0</iyz>
+          <izz>5.230e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name='rotor_1_collision'>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.128</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <collide_bitmask>0x00</collide_bitmask>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name='rotor_1_visual'>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>file://custom_hexa/meshes/prop_ccw_CG.stl</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>1.0 1.0 0.0 1</ambient>
+          <diffuse>1.0 1.0 0.2 1</diffuse>
+          <specular>0.8 0.8 0.0 1</specular>
+        </material>
+      </visual>
+    </link>
+
+    <joint name='rotor_1_joint' type='revolute'>
+      <child>rotor_1</child>
+      <parent>base_link</parent>
+      <axis>
+  <xyz expressed_in="__model__">0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.005</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+<!-- ########################################  /ROTOR1  ############################################ -->
+
+<!-- ##########################################  MOTOR1  ############################################ -->
+  <link name='motor_1'>
+    <pose>0.255691 -0.1475 0.071 0 0 -2.09439510239</pose>
+    <inertial>
+      <mass>0.072</mass>
+      <inertia>
+        <ixx>8.928e-06</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>8.928e-06</iyy>
+        <iyz>0</iyz>
+        <izz>7.056e-06</izz>
+      </inertia>
+    </inertial>
+    <collision name='motor_1_collision'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+    </collision>
+    <visual name='motor_1_visual'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+      <material>
+        <ambient>0.2 0.2 0.2 1</ambient>
+        <diffuse>0.3 0.3 0.3 1</diffuse>
+        <specular>0.6 0.6 0.6 1</specular>
+      </material>
+    </visual>
+  </link>
+  <joint name='base_motor_1' type='fixed'>
+    <child>motor_1</child>
+    <parent>base_link</parent>
+  </joint>
+
+
+<!-- #########################################  ROTOR2  ############################################ -->
+<link name='rotor_2'>
+  <pose>-0.255691 -0.1475 0.093 0 0 2.09439510239</pose>
+      <inertial>
+        <mass>0.008</mass>
+        <inertia>
+          <ixx>5.205e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.667e-07</iyy>
+          <iyz>0</iyz>
+          <izz>5.230e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name='rotor_2_collision'>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.128</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <collide_bitmask>0x00</collide_bitmask>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name='rotor_2_visual'>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>file://custom_hexa/meshes/prop_ccw_CG.stl</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>1.0 1.0 0.0 1</ambient>
+          <diffuse>1.0 1.0 0.2 1</diffuse>
+          <specular>0.8 0.8 0.0 1</specular>
+        </material>
+      </visual>
+    </link>
+
+    <joint name='rotor_2_joint' type='revolute'>
+      <child>rotor_2</child>
+      <parent>base_link</parent>
+      <axis>
+  <xyz expressed_in="__model__">0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.005</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+<!-- ########################################  /ROTOR2  ############################################ -->
+
+<!-- ##########################################  MOTOR2  ############################################ -->
+  <link name='motor_2'>
+    <pose>-0.255691 -0.1475 0.071 0 0 2.09439510239</pose>
+    <inertial>
+      <mass>0.072</mass>
+      <inertia>
+        <ixx>8.928e-06</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>8.928e-06</iyy>
+        <iyz>0</iyz>
+        <izz>7.056e-06</izz>
+      </inertia>
+    </inertial>
+    <collision name='motor_2_collision'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+    </collision>
+    <visual name='motor_2_visual'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+      <material>
+        <ambient>0.2 0.2 0.2 1</ambient>
+        <diffuse>0.3 0.3 0.3 1</diffuse>
+        <specular>0.6 0.6 0.6 1</specular>
+      </material>
+    </visual>
+  </link>
+  <joint name='base_motor_2' type='fixed'>
+    <child>motor_2</child>
+    <parent>base_link</parent>
+  </joint>
+
+
+<!-- #########################################  ROTOR3  ############################################ -->
+<link name='rotor_3'>
+  <pose>0.255691 0.1475 0.093 0 0 0</pose>
+      <inertial>
+        <mass>0.008</mass>
+        <inertia>
+          <ixx>5.205e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.667e-07</iyy>
+          <iyz>0</iyz>
+          <izz>5.230e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name='rotor_3_collision'>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.128</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <collide_bitmask>0x00</collide_bitmask>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name='rotor_3_visual'>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>file://custom_hexa/meshes/prop_cw_CG.stl</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>1.0 1.0 0.0 1</ambient>
+          <diffuse>1.0 1.0 0.2 1</diffuse>
+          <specular>0.8 0.8 0.0 1</specular>
+        </material>
+      </visual>
+    </link>
+
+    <joint name='rotor_3_joint' type='revolute'>
+      <child>rotor_3</child>
+      <parent>base_link</parent>
+      <axis>
+  <xyz expressed_in="__model__">0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.005</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+<!-- ########################################  /ROTOR3  ############################################ -->
+
+<!-- ##########################################  MOTOR3  ############################################ -->
+  <link name='motor_3'>
+    <pose>0.255691 0.1475 0.071 0 0 0</pose>
+    <inertial>
+      <mass>0.072</mass>
+      <inertia>
+        <ixx>8.928e-06</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>8.928e-06</iyy>
+        <iyz>0</iyz>
+        <izz>7.056e-06</izz>
+      </inertia>
+    </inertial>
+    <collision name='motor_3_collision'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+    </collision>
+    <visual name='motor_3_visual'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+      <material>
+        <ambient>0.2 0.2 0.2 1</ambient>
+        <diffuse>0.3 0.3 0.3 1</diffuse>
+        <specular>0.6 0.6 0.6 1</specular>
+      </material>
+    </visual>
+  </link>
+  <joint name='base_motor_3' type='fixed'>
+    <child>motor_3</child>
+    <parent>base_link</parent>
+  </joint>
+
+
+<!-- #########################################  ROTOR4  ############################################ -->
+  <link name='rotor_4'>
+  <pose>0 0.295 0.093 0 0 0</pose>
+      <inertial>
+        <mass>0.008</mass>
+        <inertia>
+          <ixx>5.205e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.667e-07</iyy>
+          <iyz>0</iyz>
+          <izz>5.230e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name='rotor_4_collision'>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.128</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <collide_bitmask>0x00</collide_bitmask>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name='rotor_4_visual'>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>file://custom_hexa/meshes/prop_ccw_CG.stl</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>1.0 1.0 0.0 1</ambient>
+          <diffuse>1.0 1.0 0.2 1</diffuse>
+          <specular>0.8 0.8 0.0 1</specular>
+        </material>
+      </visual>
+    </link>
+
+    <joint name='rotor_4_joint' type='revolute'>
+      <child>rotor_4</child>
+      <parent>base_link</parent>
+      <axis>
+  <xyz expressed_in="__model__">0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.005</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+<!-- ########################################  /ROTOR4  ############################################ -->
+
+<!-- ##########################################  MOTOR4  ############################################ -->
+  <link name='motor_4'>
+    <pose>0 0.295 0.071 0 0 0</pose>
+    <inertial>
+      <mass>0.072</mass>
+      <inertia>
+        <ixx>8.928e-06</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>8.928e-06</iyy>
+        <iyz>0</iyz>
+        <izz>7.056e-06</izz>
+      </inertia>
+    </inertial>
+    <collision name='motor_4_collision'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+    </collision>
+    <visual name='motor_4_visual'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+      <material>
+        <ambient>0.2 0.2 0.2 1</ambient>
+        <diffuse>0.3 0.3 0.3 1</diffuse>
+        <specular>0.6 0.6 0.6 1</specular>
+      </material>
+    </visual>
+  </link>
+  <joint name='base_motor_4' type='fixed'>
+    <child>motor_4</child>
+    <parent>base_link</parent>
+  </joint>
+
+
+<!-- #########################################  ROTOR5  ############################################ -->
+<link name='rotor_5'>
+  <pose>0 -0.295 0.093 0 0 -2.09439510239</pose>
+      <inertial>
+        <mass>0.008</mass>
+        <inertia>
+          <ixx>5.205e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2.667e-07</iyy>
+          <iyz>0</iyz>
+          <izz>5.230e-05</izz>
+        </inertia>
+      </inertial>
+
+      <collision name='rotor_5_collision'>
+        <geometry>
+          <cylinder>
+            <length>0.005</length>
+            <radius>0.128</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <collide_bitmask>0x00</collide_bitmask>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name='rotor_5_visual'>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <!-- Use clockwise prop mesh to alternate torque (rotors 0,3,5 cw; 1,2,4 ccw) -->
+            <uri>file://custom_hexa/meshes/prop_cw_CG.stl</uri>
+          </mesh>
+        </geometry>
+        <material>  
+          <ambient>1.0 1.0 0.0 1</ambient>
+          <diffuse>1.0 1.0 0.2 1</diffuse>
+          <specular>0.8 0.8 0.0 1</specular>
+        </material>
+      </visual>
+    </link>
+
+    <joint name='rotor_5_joint' type='revolute'>
+      <child>rotor_5</child>
+      <parent>base_link</parent>
+      <axis>
+  <xyz expressed_in="__model__">0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+          <effort>100000</effort>
+          <velocity>4000</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.005</damping>
+        </dynamics>
+      </axis>
+      <physics>
+        <ode>
+          <implicit_spring_damper>1</implicit_spring_damper>
+        </ode>
+      </physics>
+    </joint>
+<!-- ########################################  /ROTOR5  ############################################ -->
+
+<!-- ##########################################  MOTOR5  ############################################ -->
+  <link name='motor_5'>
+    <pose>0 -0.295 0.071 0 0 -2.09439510239</pose>
+    <inertial>
+      <mass>0.072</mass>
+      <inertia>
+        <ixx>8.928e-06</ixx>
+        <ixy>0</ixy>
+        <ixz>0</ixz>
+        <iyy>8.928e-06</iyy>
+        <iyz>0</iyz>
+        <izz>7.056e-06</izz>
+      </inertia>
+    </inertial>
+    <collision name='motor_5_collision'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+    </collision>
+    <visual name='motor_5_visual'>
+      <geometry>
+        <cylinder>
+          <length>0.032</length>
+          <radius>0.014</radius>
+        </cylinder>
+      </geometry>
+      <material>
+        <ambient>0.2 0.2 0.2 1</ambient>
+        <diffuse>0.3 0.3 0.3 1</diffuse>
+        <specular>0.6 0.6 0.6 1</specular>
+      </material>
+    </visual>
+  </link>
+  <joint name='base_motor_5' type='fixed'>
+    <child>motor_5</child>
+    <parent>base_link</parent>
+  </joint>
+
+
+<!-- ######################################### LANDING GEAR STRUT 1 ################################# -->
+<link name="landing_gear_1">
+  <!-- Position at Arm1 location, radially outward (90° + 180°), 30° tilt from vertical -->
+  <pose>0 0.1874 0.045 0 0.523598776 -1.57079632679</pose>
+  
+  <inertial>
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <mass>0.02825</mass>
+    <inertia>
+      <ixx>2.17e-04</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>2.17e-04</iyy>
+      <iyz>0</iyz>
+      <izz>7.73e-07</izz>
+    </inertia>
+  </inertial>
+
+  <collision name="landing_gear_1_collision">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+  </collision>
+
+  <visual name="landing_gear_1_visual">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+    <material>
+      <ambient>1.0 1.0 1.0 1</ambient>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+    </material>
+  </visual>
+</link>
+
+<joint name="base_landing_gear_1" type="fixed">
+  <child>landing_gear_1</child>
+  <parent>base_link</parent>
+</joint>
+
+<!-- ######################################### /LANDING GEAR STRUT 1 ############################### -->
+
+<!-- ######################################### LANDING GEAR STRUT 2 ################################# -->
+<link name="landing_gear_2">
+  <!-- Position at Arm2 location, radially outward (30° + 180°), 30° tilt from vertical -->
+  <pose>0.162293160669 0.0937 0.045 0 0.523598776 3.66519142919</pose>
+  
+  <inertial>
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <mass>0.02825</mass>
+    <inertia>
+      <ixx>2.17e-04</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>2.17e-04</iyy>
+      <iyz>0</iyz>
+      <izz>7.73e-07</izz>
+    </inertia>
+  </inertial>
+
+  <collision name="landing_gear_2_collision">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+  </collision>
+
+  <visual name="landing_gear_2_visual">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+    <material>
+      <ambient>1.0 1.0 1.0 1</ambient>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+    </material>
+  </visual>
+</link>
+
+<joint name="base_landing_gear_2" type="fixed">
+  <child>landing_gear_2</child>
+  <parent>base_link</parent>
+</joint>
+
+<!-- ######################################### /LANDING GEAR STRUT 2 ############################### -->
+
+<!-- ######################################### LANDING GEAR STRUT 3 ################################# -->
+<link name="landing_gear_3">
+  <!-- Position at Arm3 location, radially outward (-30° + 180°), 30° tilt from vertical -->
+  <pose>0.162293160669 -0.0937 0.045 0 0.523598776 2.61799387799</pose>
+  
+  <inertial>
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <mass>0.02825</mass>
+    <inertia>
+      <ixx>2.17e-04</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>2.17e-04</iyy>
+      <iyz>0</iyz>
+      <izz>7.73e-07</izz>
+    </inertia>
+  </inertial>
+
+  <collision name="landing_gear_3_collision">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+  </collision>
+
+  <visual name="landing_gear_3_visual">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+    <material>
+      <ambient>1.0 1.0 1.0 1</ambient>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+    </material>
+  </visual>
+</link>
+
+<joint name="base_landing_gear_3" type="fixed">
+  <child>landing_gear_3</child>
+  <parent>base_link</parent>
+</joint>
+
+<!-- ######################################### /LANDING GEAR STRUT 3 ############################### -->
+
+<!-- ######################################### LANDING GEAR STRUT 4 ################################# -->
+<link name="landing_gear_4">
+  <!-- Position at Arm4 location, radially outward (-90° + 180°), 30° tilt from vertical -->
+  <pose>0 -0.1874 0.045 0 0.523598776 1.57079632679</pose>
+  
+  <inertial>
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <mass>0.02825</mass>
+    <inertia>
+      <ixx>2.17e-04</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>2.17e-04</iyy>
+      <iyz>0</iyz>
+      <izz>7.73e-07</izz>
+    </inertia>
+  </inertial>
+
+  <collision name="landing_gear_4_collision">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+  </collision>
+
+  <visual name="landing_gear_4_visual">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+    <material>
+      <ambient>1.0 1.0 1.0 1</ambient>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+    </material>
+  </visual>
+</link>
+
+<joint name="base_landing_gear_4" type="fixed">
+  <child>landing_gear_4</child>
+  <parent>base_link</parent>
+</joint>
+
+<!-- ######################################### /LANDING GEAR STRUT 4 ############################### -->
+
+<!-- ######################################### LANDING GEAR STRUT 5 ################################# -->
+<link name="landing_gear_5">
+  <!-- Position at Arm5 location, radially outward (210° + 180°), 30° tilt from vertical -->
+  <pose>-0.162293160669 -0.0937 0.045 0 0.523598776 0.523598775598</pose>
+  
+  <inertial>
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <mass>0.02825</mass>
+    <inertia>
+      <ixx>2.17e-04</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>2.17e-04</iyy>
+      <iyz>0</iyz>
+      <izz>7.73e-07</izz>
+    </inertia>
+  </inertial>
+
+  <collision name="landing_gear_5_collision">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+  </collision>
+
+  <visual name="landing_gear_5_visual">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+    <material>
+      <ambient>1.0 1.0 1.0 1</ambient>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+    </material>
+  </visual>
+</link>
+
+<joint name="base_landing_gear_5" type="fixed">
+  <child>landing_gear_5</child>
+  <parent>base_link</parent>
+</joint>
+
+<!-- ######################################### /LANDING GEAR STRUT 5 ############################### -->
+
+<!-- ######################################### LANDING GEAR STRUT 6 ################################# -->
+<link name="landing_gear_6">
+  <!-- Position at Arm6 location, radially outward (150° + 180°), 30° tilt from vertical -->
+  <pose>-0.162293160669 0.0937 0.045 0 0.523598776 -0.523598775598</pose>
+  
+  <inertial>
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <mass>0.02825</mass>
+    <inertia>
+      <ixx>2.17e-04</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>2.17e-04</iyy>
+      <iyz>0</iyz>
+      <izz>7.73e-07</izz>
+    </inertia>
+  </inertial>
+
+  <collision name="landing_gear_6_collision">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+  </collision>
+
+  <visual name="landing_gear_6_visual">
+    <pose>0 0 -0.151575 0 0 0</pose>
+    <geometry>
+      <box>
+        <size>0.01 0.01 0.30315</size>
+      </box>
+    </geometry>
+    <material>
+      <ambient>1.0 1.0 1.0 1</ambient>
+      <diffuse>1.0 1.0 1.0 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+    </material>
+  </visual>
+</link>
+
+<joint name="base_landing_gear_6" type="fixed">
+  <child>landing_gear_6</child>
+  <parent>base_link</parent>
+</joint>
+
+<!-- ######################################### /LANDING GEAR STRUT 6 ############################### -->
+
+        <!-- motor plugins -->
+
+        <!-- Gazebo Harmonic Multicopter motor model plugins -->
+        <!-- Motor: SunnySky X2216 KV1250, Battery: 4S LiPo (14.8V), Propeller: 11x5.7" CF -->
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>custom_hexa_0</robotNamespace>
+          <jointName>rotor_0_joint</jointName>
+          <linkName>rotor_0</linkName>
+          <turningDirection>cw</turningDirection>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>0</actuator_number>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>custom_hexa_0</robotNamespace>
+          <jointName>rotor_1_joint</jointName>
+          <linkName>rotor_1</linkName>
+          <turningDirection>ccw</turningDirection>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>1</actuator_number>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>custom_hexa_0</robotNamespace>
+          <jointName>rotor_2_joint</jointName>
+          <linkName>rotor_2</linkName>
+          <turningDirection>ccw</turningDirection>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>2</actuator_number>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>custom_hexa_0</robotNamespace>
+          <jointName>rotor_3_joint</jointName>
+          <linkName>rotor_3</linkName>
+          <turningDirection>cw</turningDirection>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>3</actuator_number>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>custom_hexa_0</robotNamespace>
+          <jointName>rotor_4_joint</jointName>
+          <linkName>rotor_4</linkName>
+          <turningDirection>ccw</turningDirection>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>4</actuator_number>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+        <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+          <robotNamespace>custom_hexa_0</robotNamespace>
+          <jointName>rotor_5_joint</jointName>
+          <linkName>rotor_5</linkName>
+          <turningDirection>cw</turningDirection>
+          <timeConstantUp>0.015</timeConstantUp>
+          <timeConstantDown>0.015</timeConstantDown>
+          <maxRotVelocity>1700.0</maxRotVelocity>
+          <motorConstant>4.4e-06</motorConstant>
+          <momentConstant>0.0039</momentConstant>
+          <commandSubTopic>command/motor_speed</commandSubTopic>
+          <actuator_number>5</actuator_number>
+          <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+          <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+          <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+          <motorType>velocity</motorType>
+        </plugin>
+
+        <!-- topic control -->
+
+        <!-- ign topic -t /f550/command/motor_speed -m ignition.msgs.Actuators -p 'velocity:[700, 700, 700, 700, 700, 700]' -->
+
+    <!-- Sensor system plugins are provided by PX4 gz_bridge (server.config). -->
+    <!-- Avoid loading them here to prevent duplicate publications. -->
+
+  </model>
+</sdf>

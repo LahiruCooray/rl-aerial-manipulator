@@ -1,0 +1,38 @@
+# VS Code
+.vscode/
+
+# Python venvs and caches
+.venv/
+.env/
+__pycache__/
+*.pyc
+
+# Build artifacts / binaries
+build/
+dist/
+*.o
+*.so
+*.a
+
+# Logs and runtime artifacts
+log/
+*.log
+
+# Gazebo/ignition cache
+.gazebo/
+~/.ignition/
+
+# Colcon/ROS2 build directories (if used)
+install/
+colcon_ws/
+colcon.build/
+colcon_logs/
+
+# Temporary files
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Editor backups
+*~
