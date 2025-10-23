@@ -21,34 +21,34 @@ param set-default SYS_AUTOSTART 6012
 
 # Motor positions (Gazebo ENU converted to PX4 FRD: x forward, y right)
 # Motor 0: Back Left (rotor_0 in SDF) - CW → NEGATIVE KM
-param set-default CA_ROTOR0_PX -0.279726
-param set-default CA_ROTOR0_PY -0.1615
-param set-default CA_ROTOR0_KM -0.05
+param set-default CA_ROTOR0_PX -0.255691
+param set-default CA_ROTOR0_PY -0.1475
+param set-default CA_ROTOR0_KM -0.0168
 
 # Motor 1: Front Right (rotor_1 in SDF) - CCW → POSITIVE KM
-param set-default CA_ROTOR1_PX 0.279726
-param set-default CA_ROTOR1_PY 0.1615
-param set-default CA_ROTOR1_KM 0.05
+param set-default CA_ROTOR1_PX 0.255691
+param set-default CA_ROTOR1_PY 0.1475
+param set-default CA_ROTOR1_KM 0.0168
 
 # Motor 2: Back Right (rotor_2 in SDF) - CCW → POSITIVE KM
-param set-default CA_ROTOR2_PX -0.279726
-param set-default CA_ROTOR2_PY 0.1615
-param set-default CA_ROTOR2_KM 0.05
+param set-default CA_ROTOR2_PX -0.255691
+param set-default CA_ROTOR2_PY 0.1475
+param set-default CA_ROTOR2_KM 0.0168
 
 # Motor 3: Front Left (rotor_3 in SDF) - CW → NEGATIVE KM
-param set-default CA_ROTOR3_PX 0.279726
-param set-default CA_ROTOR3_PY -0.1615
-param set-default CA_ROTOR3_KM -0.05
+param set-default CA_ROTOR3_PX 0.255691
+param set-default CA_ROTOR3_PY -0.1475
+param set-default CA_ROTOR3_KM -0.0168
 
-# Motor 4: Front Center (rotor_4 in SDF at Y=0.323) - CCW → POSITIVE KM
+# Motor 4: Left Center (rotor_4 in SDF at Y=0.295) - CCW → POSITIVE KM
 param set-default CA_ROTOR4_PX 0.0
-param set-default CA_ROTOR4_PY -0.323
-param set-default CA_ROTOR4_KM 0.05
+param set-default CA_ROTOR4_PY -0.295
+param set-default CA_ROTOR4_KM 0.0168
 
-# Motor 5: Back Center (rotor_5 in SDF at Y=-0.323) - CW → NEGATIVE KM
+# Motor 5: Right Center (rotor_5 in SDF at Y=-0.295) - CW → NEGATIVE KM
 param set-default CA_ROTOR5_PX 0.0
-param set-default CA_ROTOR5_PY 0.323
-param set-default CA_ROTOR5_KM -0.05
+param set-default CA_ROTOR5_PY 0.295
+param set-default CA_ROTOR5_KM -0.0168
 
 # Gazebo actuator mapping
 param set-default SIM_GZ_EC_FUNC1 101
@@ -66,12 +66,12 @@ param set-default SIM_GZ_EC_MIN4 150
 param set-default SIM_GZ_EC_MIN5 150
 param set-default SIM_GZ_EC_MIN6 150
 
-param set-default SIM_GZ_EC_MAX1 1700
-param set-default SIM_GZ_EC_MAX2 1700
-param set-default SIM_GZ_EC_MAX3 1700
-param set-default SIM_GZ_EC_MAX4 1700
-param set-default SIM_GZ_EC_MAX5 1700
-param set-default SIM_GZ_EC_MAX6 1700
+param set-default SIM_GZ_EC_MAX1 820
+param set-default SIM_GZ_EC_MAX2 820
+param set-default SIM_GZ_EC_MAX3 820
+param set-default SIM_GZ_EC_MAX4 820
+param set-default SIM_GZ_EC_MAX5 820
+param set-default SIM_GZ_EC_MAX6 820
 
 # Flight tuning - CRITICAL for hexacopter stability
 param set-default MC_AIRMODE 1
