@@ -1635,9 +1635,9 @@
           <turningDirection>cw</turningDirection>
           <timeConstantUp>0.015</timeConstantUp>
           <timeConstantDown>0.015</timeConstantDown>
-          <maxRotVelocity>1700.0</maxRotVelocity>
-          <motorConstant>4.4e-06</motorConstant>
-          <momentConstant>0.0039</momentConstant>
+          <maxRotVelocity>820.0</maxRotVelocity>
+          <motorConstant>2.11e-05</motorConstant>
+          <momentConstant>0.0168</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>0</actuator_number>
           <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
@@ -1652,9 +1652,9 @@
           <turningDirection>ccw</turningDirection>
           <timeConstantUp>0.015</timeConstantUp>
           <timeConstantDown>0.015</timeConstantDown>
-          <maxRotVelocity>1700.0</maxRotVelocity>
-          <motorConstant>4.4e-06</motorConstant>
-          <momentConstant>0.0039</momentConstant>
+          <maxRotVelocity>820.0</maxRotVelocity>
+          <motorConstant>2.11e-05</motorConstant>
+          <momentConstant>0.0168</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>1</actuator_number>
           <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
@@ -1669,9 +1669,9 @@
           <turningDirection>ccw</turningDirection>
           <timeConstantUp>0.015</timeConstantUp>
           <timeConstantDown>0.015</timeConstantDown>
-          <maxRotVelocity>1700.0</maxRotVelocity>
-          <motorConstant>4.4e-06</motorConstant>
-          <momentConstant>0.0039</momentConstant>
+          <maxRotVelocity>820.0</maxRotVelocity>
+          <motorConstant>2.11e-05</motorConstant>
+          <momentConstant>0.0168</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>2</actuator_number>
           <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
@@ -1686,9 +1686,9 @@
           <turningDirection>cw</turningDirection>
           <timeConstantUp>0.015</timeConstantUp>
           <timeConstantDown>0.015</timeConstantDown>
-          <maxRotVelocity>1700.0</maxRotVelocity>
-          <motorConstant>4.4e-06</motorConstant>
-          <momentConstant>0.0039</momentConstant>
+          <maxRotVelocity>820.0</maxRotVelocity>
+          <motorConstant>2.11e-05</motorConstant>
+          <momentConstant>0.0168</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>3</actuator_number>
           <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
@@ -1703,9 +1703,9 @@
           <turningDirection>ccw</turningDirection>
           <timeConstantUp>0.015</timeConstantUp>
           <timeConstantDown>0.015</timeConstantDown>
-          <maxRotVelocity>1700.0</maxRotVelocity>
-          <motorConstant>4.4e-06</motorConstant>
-          <momentConstant>0.0039</momentConstant>
+          <maxRotVelocity>820.0</maxRotVelocity>
+          <motorConstant>2.11e-05</motorConstant>
+          <momentConstant>0.0168</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>4</actuator_number>
           <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
@@ -1720,9 +1720,9 @@
           <turningDirection>cw</turningDirection>
           <timeConstantUp>0.015</timeConstantUp>
           <timeConstantDown>0.015</timeConstantDown>
-          <maxRotVelocity>1700.0</maxRotVelocity>
-          <motorConstant>4.4e-06</motorConstant>
-          <momentConstant>0.0039</momentConstant>
+          <maxRotVelocity>820.0</maxRotVelocity>
+          <motorConstant>2.11e-05</motorConstant>
+          <momentConstant>0.0168</momentConstant>
           <commandSubTopic>command/motor_speed</commandSubTopic>
           <actuator_number>5</actuator_number>
           <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
