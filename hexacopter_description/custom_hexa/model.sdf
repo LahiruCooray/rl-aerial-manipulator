@@ -127,7 +127,7 @@
       <sensor name="navsat_sensor" type="navsat">
         <pose>0 0 0.03 0 0 0</pose>
         <always_on>1</always_on>
-        <update_rate>30</update_rate>
+        <update_rate>10</update_rate>
       </sensor>
 
       <!-- Magnetometer Sensor (modeled after IIS2MDC) -->
