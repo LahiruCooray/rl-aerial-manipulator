@@ -24,6 +24,8 @@ hexacopter_description/
 ├── custom_hexa/              # Gazebo model definition
 │   ├── model.config          # Model metadata
 │   ├── model.sdf             # Complete SDF vehicle description
+│   ├── model.urdf            # URDF model for RViz visualization and ROS 2 tools
+│   ├── README.md             # Model-specific documentation
 │   └── meshes/               # 3D mesh files for visualization
 ├── airframe/
 │   └── 4022_gz_custom_hexa   # PX4 airframe configuration
@@ -36,6 +38,7 @@ hexacopter_description/
 ### File Descriptions
 
 - **`custom_hexa/model.sdf`**: Main Gazebo model file containing vehicle geometry, inertial properties, sensors (IMU), and motor plugin configurations
+- **`custom_hexa/model.urdf`**: URDF model for RViz2 visualization and ROS 2 tools (robot_state_publisher, tf2, etc.)
 - **`airframe/4022_gz_custom_hexa`**: PX4 airframe configuration with control allocation parameters, motor mapping, and flight controller gains
 - **`custom_hexa_world.sdf`**: Optional Gazebo world environment file
 - **`launch_sitl.sh`**: Convenience script to start PX4 SITL with Gazebo and load this model
@@ -193,6 +196,65 @@ Expected output:
 - Lists active topics including `/custom_hexa/command/motor_speed` and `/custom_hexa/imu`
 - Displays sample messages from each topic
 - Confirms bidirectional communication
+
+## URDF Visualization with RViz2
+
+The URDF model (`custom_hexa/model.urdf`) allows you to visualize the hexacopter in RViz2 and use ROS 2 tools like `robot_state_publisher` and TF2.
+
+### Prerequisites
+
+```bash
+sudo apt install ros-jazzy-robot-state-publisher ros-jazzy-joint-state-publisher-gui ros-jazzy-rviz2
+```
+
+### Launch Steps
+
+**Terminal 1 - Robot State Publisher:**
+```bash
+source /opt/ros/jazzy/setup.bash
+ros2 run robot_state_publisher robot_state_publisher --ros-args \
+  -p robot_description:="$(cat /home/lahiru/newlocalrepo/rl-aerial-manipulator/hexacopter_description/custom_hexa/model.urdf)"
+```
+
+**Terminal 2 - Joint State Publisher GUI:**
+```bash
+source /opt/ros/jazzy/setup.bash
+ros2 run joint_state_publisher_gui joint_state_publisher_gui
+```
+
+**Terminal 3 - RViz2:**
+```bash
+source /opt/ros/jazzy/setup.bash
+rviz2
+```
+
+### RViz2 Configuration
+
+1. Set **Fixed Frame** to `world` (in Global Options on the left panel)
+2. Click **Add** → **By display type** → **RobotModel** → **OK**
+3. Expand **RobotModel** and set **Description Topic** to `/robot_description`
+4. The hexacopter should now be visible!
+
+### Quick One-Liner Launch
+
+For convenience, you can launch all three in one terminal (using background processes):
+
+```bash
+source /opt/ros/jazzy/setup.bash && \
+ros2 run robot_state_publisher robot_state_publisher --ros-args \
+  -p robot_description:="$(cat /home/lahiru/newlocalrepo/rl-aerial-manipulator/hexacopter_description/custom_hexa/model.urdf)" &
+sleep 1 && ros2 run joint_state_publisher_gui joint_state_publisher_gui &
+sleep 1 && rviz2
+```
+
+### Troubleshooting RViz2 Visualization
+
+| Issue | Solution |
+|-------|----------|
+| Robot invisible but "Status: Ok" | Check **Fixed Frame** is set to `world` |
+| "No transform from [link] to [world]" | Ensure `robot_state_publisher` is running |
+| Mesh files not loading | Verify mesh paths in URDF use `file://` absolute paths |
+| RobotModel shows errors | Check `/robot_description` topic with `ros2 topic echo /robot_description` |
 
 ## Simulation Configuration
 
