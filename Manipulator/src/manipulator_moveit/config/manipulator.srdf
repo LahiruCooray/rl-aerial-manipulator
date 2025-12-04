@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- SRDF (Semantic Robot Description Format) file for MoveIt. -->
+
+<robot name="manipulator">
+
+    <!-- Planning groups—>logical sets of joints/links that MoveIt will control as a unit.
+    
+    Why groups? MoveIt’s planners operate per group. 
+     You’ll ask it to plan for "arm" (cartesian IK/trajectories) and optionally open/close "gripper".-->
+  
+    <group name="arm">  <!-- This tells MoveIt “the manipulator arm consists of these joints.”-->
+        <joint name="virtual_joint"/>    <!-- world↔base “floating/fixed” joint -->
+
+        <joint name="joint_1"/>
+        <joint name="joint_2"/>
+        <joint name="joint_3"/>
+
+        <joint name="horizontal_arm_to_claw_support"/>   <!-- your “last arm” joint -->
+    </group>
+
+    <group name="gripper">  <!-- This tells MoveIt “the gripper consists of these joints.”-->
+        <joint name="joint_4"/>
+        <joint name="joint_5"/>
+    </group>
+
+    <!-- Group states → named “home” poses
+         You define default joint configurations that are handy to return to (e.g., “home”).
+         Values are radians for revolute joints -->
+
+    <group_state name="home" group="arm">
+        <joint name="joint_1" value="0"/>
+        <joint name="joint_2" value="0"/>
+        <joint name="joint_3" value="0"/>
+    </group_state>
+
+    <group_state name="home" group="gripper">
+        <joint name="joint_4" value="0"/>
+    </group_state>
+
+    <disable_collisions link1="base_plate" link2="rotating_column" reason="Adjacent"/>
+    <disable_collisions link1="base_plate" link2="forward_drive_arm" reason="Never"/>
+    <disable_collisions link1="base_plate" link2="horizontal_arm" reason="Never"/>
+    <disable_collisions link1="base_plate" link2="claw_support" reason="Never"/>
+    <disable_collisions link1="base_plate" link2="gripper_left" reason="Never"/>
+    <disable_collisions link1="base_plate" link2="gripper_right" reason="Never"/>
+    
+    <disable_collisions link1="rotating_column" link2="forward_drive_arm" reason="Adjacent"/>
+    <disable_collisions link1="rotating_column" link2="horizontal_arm" reason="Never"/>
+    <disable_collisions link1="rotating_column" link2="claw_support" reason="Never"/>
+    <disable_collisions link1="rotating_column" link2="gripper_left" reason="Never"/>
+    <disable_collisions link1="rotating_column" link2="gripper_right" reason="Never"/>
+    
+    <disable_collisions link1="forward_drive_arm" link2="horizontal_arm" reason="Adjacent"/>
+    <disable_collisions link1="forward_drive_arm" link2="claw_support" reason="Never"/>
+    <disable_collisions link1="forward_drive_arm" link2="gripper_left" reason="Never"/>
+    <disable_collisions link1="forward_drive_arm" link2="gripper_right" reason="Never"/>
+    
+    <disable_collisions link1="horizontal_arm" link2="claw_support" reason="Adjacent"/>
+    <disable_collisions link1="horizontal_arm" link2="gripper_left" reason="Never"/>
+    <disable_collisions link1="horizontal_arm" link2="gripper_right" reason="Never"/>
+    
+    <disable_collisions link1="claw_support" link2="gripper_left" reason="Adjacent"/>
+    <disable_collisions link1="claw_support" link2="gripper_right" reason="Adjacent"/>
+    
+    <disable_collisions link1="gripper_left" link2="gripper_right" reason="Never"/>
+
+    <!-- Each link of your robot (like base, arm, gripper, etc.) has a mesh or shape that represents its physical volume.
+         During motion planning, MoveIt continuously checks: “Do any two shapes occupy the same 3D space at the same time?”
+         If yes, that’s a collision → the pose or trajectory is invalid.-->  
+    
+    <!-- Imagine your robot arm trying to reach down:
+                If the gripper hits the base plate, that’s a self-collision.
+                If the gripper hits the table, that’s an environment collision.
+         MoveIt’s planner will then reject that motion and search for another path.-->   
+
+    <!-- But some collisions are okay. For example, adjacent links are always touching, so they’re always colliding.
+         And some links are very close together, so you might want to ignore collisions between them.
+         You can disable collision checking between any two links with a <disable_collision> tag.-->
+
+    <!-- Adjacent : The two links are directly connected (neighbors in the kinematic chain). They’re always touching or share a joint.
+         Never : The author wants to say “these two parts should never collide,” but they were disabled anyway to simplify planning or because the collision check is unnecessary-->
+
+</robot>

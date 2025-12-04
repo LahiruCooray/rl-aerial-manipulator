@@ -1,0 +1,49 @@
+default_velocity_scaling_factor: 0.1
+default_acceleration_scaling_factor: 0.1
+
+# Joint limits for each joint in the manipulator
+joint_limits:
+  joint_1:
+    has_velocity_limits: true
+    max_velocity: 10.0  # rad/s
+    has_acceleration_limits: true
+    max_acceleration: 1.0  # rad/s^2
+    # Pilz expects deceleration with negative sign (convention: braking is negative)
+    max_deceleration: -1.0  # rad/s^2
+  
+  joint_2:
+    has_velocity_limits: true
+    max_velocity: 10.0  # rad/s
+    has_acceleration_limits: true
+    max_acceleration: 1.0  # rad/s^2
+    max_deceleration: -1.0  # rad/s^2
+
+  joint_3:
+    has_velocity_limits: true
+    max_velocity: 10.0  # rad/s
+    has_acceleration_limits: true
+    max_acceleration: 1.0  # rad/s^2
+    max_deceleration: -1.0  # rad/s^2
+
+  joint_4:
+    has_velocity_limits: true
+    max_velocity: 10.0  # rad/s
+    has_acceleration_limits: true
+    max_acceleration: 1.0  # rad/s^2
+    max_deceleration: -1.0  # rad/s^2
+
+  joint_5:
+    has_velocity_limits: true
+    max_velocity: 10.0  # rad/s
+    has_acceleration_limits: true
+    max_acceleration: 1.0  # rad/s^2
+    max_deceleration: -1.0  # rad/s^2
+
+
+# This file defines kinematic limits for each joint and sets global scaling factors for velocity and acceleration.
+
+# This means MoveIt will plan motions at 10 % of the maximum physical speed/acceleration (safer and smoother).
+
+# Purpose:
+      # Ensures the planner never commands physically unsafe speeds.
+      # Used during trajectory generation to bound angular velocities.

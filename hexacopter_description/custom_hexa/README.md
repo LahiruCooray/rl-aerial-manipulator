@@ -99,6 +99,7 @@ rviz2 -d /opt/ros/jazzy/share/urdf_tutorial/rviz/urdf.rviz
 - Check TF tree: `ros2 run tf2_tools view_frames`
 
 **Mesh loading errors:**
+- Check the paths of meshes in the urdf file.
 - Verify mesh files exist in the `meshes/` folder
 - Check file permissions: `ls -la meshes/`
 
