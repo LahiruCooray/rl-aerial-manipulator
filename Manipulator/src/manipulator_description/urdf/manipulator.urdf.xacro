@@ -261,20 +261,30 @@
         </collision>
     </link>
 
-    <joint name="joint_middle_to_L" type="fixed">
-        <parent link="h_arm_L"/>
-        <child link="h_arm_middle"/>
+    <link name="h_bridge">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.001"/>
+            <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+        </inertial>
+    </link>
 
-        <!-- Middle piece connects to end of left arm -->
+    <joint name="joint_L_to_bridge" type="fixed">
+        <parent link="h_arm_L"/>
+        <child  link="h_bridge"/>
         <origin xyz="0.0265 0 0" rpy="0 0 0"/>
     </joint>
 
-    <joint name="joint_middle_to_R" type="fixed">
+    <joint name="joint_R_to_bridge" type="fixed">
         <parent link="h_arm_R"/>
-        <child link="h_arm_middle"/>
-
-        <!-- Middle piece connects to end of right arm -->
+        <child  link="h_bridge"/>
         <origin xyz="-0.0265 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="joint_bridge_to_middle" type="fixed">
+        <parent link="h_bridge"/>
+        <child  link="h_arm_middle"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
 
 
@@ -304,26 +314,15 @@
             </geometry>
         </collision>
     </link>
-
+    
     <joint name="joint_4" type="revolute">
-        <parent link="h_arm_R"/>
+        <parent link="h_arm_middle"/>
         <child link="motor_3"/>
         
-        <origin xyz="-0.0275 0 -0.106" rpy="0 0 0"/>
+        <origin xyz="0 0 -0.106" rpy="0 0 0"/>
         <!-- Rotation around X-axis -->
         <axis xyz="1 0 0"/>
         <limit lower="-1.57" upper="1.57" effort="2.0" velocity="3.0"/>
-    </joint>
-
-    <joint name="joint_5" type="revolute">
-        <parent link="h_arm_L"/>
-        <child link="motor_3"/>
-        
-        <origin xyz="0.0275 0 -0.106" rpy="0 0 0"/>
-        <!-- Rotation around X-axis -->
-        <axis xyz="1 0 0"/>
-        <limit lower="-1.57" upper="1.57" effort="2.0" velocity="3.0"/>
-        <mimic joint="joint_4" multiplier="1"/> 
     </joint>
 
 

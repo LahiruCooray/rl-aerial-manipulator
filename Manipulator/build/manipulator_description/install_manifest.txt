@@ -1,4 +1,5 @@
 /home/rajitha-niroshan/FYP/Repos/rl-aerial-manipulator/Manipulator/install/manipulator_description/share/manipulator_description/urdf/manipulator.urdf.xacro
+/home/rajitha-niroshan/FYP/Repos/rl-aerial-manipulator/Manipulator/install/manipulator_description/share/manipulator_description/launch/gazebo.launch.py
 /home/rajitha-niroshan/FYP/Repos/rl-aerial-manipulator/Manipulator/install/manipulator_description/share/manipulator_description/launch/display.launch.py
 /home/rajitha-niroshan/FYP/Repos/rl-aerial-manipulator/Manipulator/install/manipulator_description/share/manipulator_description/rviz/display.rviz
 /home/rajitha-niroshan/FYP/Repos/rl-aerial-manipulator/Manipulator/install/manipulator_description/share/ament_index/resource_index/package_run_dependencies/manipulator_description
