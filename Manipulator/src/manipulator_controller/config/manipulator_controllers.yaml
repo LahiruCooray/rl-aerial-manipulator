@@ -1,0 +1,64 @@
+# Top-level controller_manager configuration:
+# - update_rate: how often (Hz) the controller manager / control loop runs.
+# - Under this key you list controllers that the manager will try to load.
+controller_manager:
+  ros__parameters:
+    update_rate: 10 # Increased from 10 to 1000 Hz for more responsive control
+
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+      # type: forward_command_controller/ForwardCommandController
+
+    # Broadcaster that publishes joint states (sensor-like feed of positions/velocities)
+    # so other nodes (e.g., rviz, controllers) can read current joint values.
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+
+# --- Specific configuration for controllers (separate blocks) ---
+# Many controller YAMLs keep per-controller settings in blocks below the controller_manager
+# so the controller plugin can find its settings by name.
+
+arm_controller:
+  ros__parameters:
+    # Which joints this controller controls (order matters for trajectory points).
+    joints:
+      - joint_1
+      - joint_2
+      - joint_3
+
+    # Which command interfaces the controller will write to on each joint.
+    # 'position' here means the controller sends position commands to the hardware/system.
+    command_interfaces:
+      - position
+
+    # Which state interfaces the controller expects to read (feedback).
+    state_interfaces:
+      - position
+
+    #the controller sends commands but does not rely on a low-level closed-loop controller or hardware to precisely track them. It operates open loop — it publishes desired setpoints and assumes the simulator / hardware will move accordingly, but it won’t try to close the loop itself. This is useful for simple simulations or systems without built-in position control.
+    open_loop_control: true
+
+    # when the controller receives a new trajectory goal while a previous goal is active, it will integrate/merge the new trajectory into the current goal instead of discarding or completely replacing it. This allows you to stream incremental trajectory segments smoothly.
+    allow_integration_in_goal_trajectories: true
+
+
+gripper_controller:
+  ros__parameters:
+    joints:
+      - joint_4
+
+    # interface_name: position
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
+

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="manipulator">
+
+    <gazebo>
+        <!-- Gazebo Harmonic (gz-sim) ROS 2 Control plugin -->
+        <plugin filename="gz_ros2_control-system"
+                name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+
+            <parameters>$(find manipulator_controller)/config/manipulator_controllers.yaml</parameters>
+
+        </plugin>
+    </gazebo>
+
+</robot>
+
+
+
+
+
+
+
+<!--
+
+A control plugin in Gazebo + ROS 2 is the bridge that connects your robot’s joints to ROS2 controllers (like JointTrajectoryController, PositionController, etc.)
+
+It is absolutely required if you want to move your robot in Gazebo using ROS 2.
+
+Let me explain in the simplest way.
+
+🧠 What is a control plugin? (Simple explanation)
+
+Think of your robot’s joints as motors.
+
+Think of ROS 2 controllers as the remote control.
+
+A control plugin is the wire that connects the remote to the motors.
+
+Without the plugin:
+
+controllers cannot send commands to Gazebo
+
+joints will not move
+
+/joint_states will not be published
+
+MoveIt will not work
+
+🎯 What exactly does the control plugin do?
+1. Reads joint positions/velocity from Gazebo
+
+✔ Feeds them to ROS 2
+✔ Publishes /joint_states
+
+2. Receives commands from ROS 2
+
+✔ e.g. position, velocity, effort
+✔ Sends them to the Gazebo physics engine
+✔ Moves the joints
+
+3. Applies real physics
+
+✔ torque limits
+✔ joint friction
+✔ inertia
+✔ constraints
+-->
