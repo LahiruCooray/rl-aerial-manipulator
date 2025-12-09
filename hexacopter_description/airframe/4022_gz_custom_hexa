@@ -8,7 +8,7 @@
 
 # Gazebo configuration
 PX4_SIMULATOR=${PX4_SIMULATOR:=gz}
-PX4_GZ_WORLD=${PX4_GZ_WORLD:=default}
+PX4_GZ_WORLD=${PX4_GZ_WORLD:=custom_hexa_world}
 PX4_SIM_MODEL=${PX4_SIM_MODEL:=custom_hexa}
 
 # Enable Gazebo
@@ -19,33 +19,34 @@ param set-default CA_AIRFRAME 0
 param set-default CA_ROTOR_COUNT 6
 param set-default SYS_AUTOSTART 6012
 
-# Motor positions (Gazebo ENU converted to PX4 FRD: x forward, y right)
-# Motor 0: Back Left (rotor_0 in SDF) - CW → NEGATIVE KM
+# Motor positions (Gazebo ENU coordinates: X forward, Y left, Z up)
+# PX4 uses FRD (X forward, Y right, Z down), so Y-axis is negated
+# Motor 0: Back Left (rotor_0 in SDF at X=-0.255691, Y=0.1475) - CW → NEGATIVE KM
 param set-default CA_ROTOR0_PX -0.255691
 param set-default CA_ROTOR0_PY -0.1475
 param set-default CA_ROTOR0_KM -0.0168
 
-# Motor 1: Front Right (rotor_1 in SDF) - CCW → POSITIVE KM
+# Motor 1: Front Right (rotor_1 in SDF at X=0.255691, Y=-0.1475) - CCW → POSITIVE KM
 param set-default CA_ROTOR1_PX 0.255691
 param set-default CA_ROTOR1_PY 0.1475
 param set-default CA_ROTOR1_KM 0.0168
 
-# Motor 2: Back Right (rotor_2 in SDF) - CCW → POSITIVE KM
+# Motor 2: Back Right (rotor_2 in SDF at X=-0.255691, Y=-0.1475) - CCW → POSITIVE KM
 param set-default CA_ROTOR2_PX -0.255691
 param set-default CA_ROTOR2_PY 0.1475
 param set-default CA_ROTOR2_KM 0.0168
 
-# Motor 3: Front Left (rotor_3 in SDF) - CW → NEGATIVE KM
+# Motor 3: Front Left (rotor_3 in SDF at X=0.255691, Y=0.1475) - CW → NEGATIVE KM
 param set-default CA_ROTOR3_PX 0.255691
 param set-default CA_ROTOR3_PY -0.1475
 param set-default CA_ROTOR3_KM -0.0168
 
-# Motor 4: Left Center (rotor_4 in SDF at Y=0.295) - CCW → POSITIVE KM
+# Motor 4: Left Center (rotor_4 in SDF at X=0, Y=0.295) - CCW → POSITIVE KM
 param set-default CA_ROTOR4_PX 0.0
 param set-default CA_ROTOR4_PY -0.295
 param set-default CA_ROTOR4_KM 0.0168
 
-# Motor 5: Right Center (rotor_5 in SDF at Y=-0.295) - CW → NEGATIVE KM
+# Motor 5: Right Center (rotor_5 in SDF at X=0, Y=-0.295) - CW → NEGATIVE KM
 param set-default CA_ROTOR5_PX 0.0
 param set-default CA_ROTOR5_PY 0.295
 param set-default CA_ROTOR5_KM -0.0168
@@ -73,12 +74,12 @@ param set-default SIM_GZ_EC_MAX4 820
 param set-default SIM_GZ_EC_MAX5 820
 param set-default SIM_GZ_EC_MAX6 820
 
-# Flight tuning - CRITICAL for hexacopter stability
+# Flight tuning - Baseline controller for RL residual learning
 param set-default MC_AIRMODE 1
-param set-default MPC_THR_HOVER 0.5
+param set-default MPC_THR_HOVER 0.46
 param set-default MPC_MANTHR_MIN 0.08
 
-# Rate control gains - reduce for initial testing
+# Rate control gains - Baseline PID for residual RL to build upon
 param set-default MC_ROLLRATE_P 0.15
 param set-default MC_PITCHRATE_P 0.15
 param set-default MC_YAWRATE_P 0.2
@@ -99,5 +100,9 @@ param set-default MC_YAW_P 2.8
 # EKF2 settings
 param set-default EKF2_HGT_REF 1
 
-# Disable some failsafes for testing
-param set-default COM_ARM_WO_GPS 1
+# RL Training - Disable failsafes that could interrupt learning
+#param set-default COM_ARM_WO_GPS 1
+#param set-default COM_RC_LOSS_T 0
+#param set-default COM_RCL_EXCEPT 4
+#param set-default COM_OF_LOSS_T 1.0
+#param set-default CBRK_USB_CHK 197848

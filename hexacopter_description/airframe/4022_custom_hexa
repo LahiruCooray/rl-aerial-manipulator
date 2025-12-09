@@ -1,0 +1,138 @@
+#!/bin/sh
+#
+# @name Custom Hexarotor X (Real Hardware)
+# @type Hexarotor x
+#
+
+. ${R}etc/init.d/rc.mc_defaults
+
+# Airframe type
+param set-default CA_AIRFRAME 0
+param set-default CA_ROTOR_COUNT 6
+param set-default SYS_AUTOSTART 6012
+
+# Motor positions (FRD: X forward, Y right, Z down)
+# Motor 0: Back Left - CW → NEGATIVE KM
+param set-default CA_ROTOR0_PX -0.255691
+param set-default CA_ROTOR0_PY -0.1475
+param set-default CA_ROTOR0_KM -0.0168
+
+# Motor 1: Front Right - CCW → POSITIVE KM
+param set-default CA_ROTOR1_PX 0.255691
+param set-default CA_ROTOR1_PY 0.1475
+param set-default CA_ROTOR1_KM 0.0168
+
+# Motor 2: Back Right - CCW → POSITIVE KM
+param set-default CA_ROTOR2_PX -0.255691
+param set-default CA_ROTOR2_PY 0.1475
+param set-default CA_ROTOR2_KM 0.0168
+
+# Motor 3: Front Left - CW → NEGATIVE KM
+param set-default CA_ROTOR3_PX 0.255691
+param set-default CA_ROTOR3_PY -0.1475
+param set-default CA_ROTOR3_KM -0.0168
+
+# Motor 4: Left Center - CCW → POSITIVE KM
+param set-default CA_ROTOR4_PX 0.0
+param set-default CA_ROTOR4_PY -0.295
+param set-default CA_ROTOR4_KM 0.0168
+
+# Motor 5: Right Center - CW → NEGATIVE KM
+param set-default CA_ROTOR5_PX 0.0
+param set-default CA_ROTOR5_PY 0.295
+param set-default CA_ROTOR5_KM -0.0168
+
+# PWM Output Configuration (Real Hardware ESCs/Motors)
+# IMPORTANT: Verify these match your ESC configuration!
+param set-default PWM_MAIN_FUNC1 101  # Motor 1 on PWM output 1
+param set-default PWM_MAIN_FUNC2 102  # Motor 2 on PWM output 2
+param set-default PWM_MAIN_FUNC3 103  # Motor 3 on PWM output 3
+param set-default PWM_MAIN_FUNC4 104  # Motor 4 on PWM output 4
+param set-default PWM_MAIN_FUNC5 105  # Motor 5 on PWM output 5
+param set-default PWM_MAIN_FUNC6 106  # Motor 6 on PWM output 6
+
+# PWM Signal Limits (Adjust based on your ESC documentation)
+# Typical values for standard ESCs: 1000-2000μs
+# OneShot125: 125-250μs, DShot: digital protocol (no PWM limits)
+param set-default PWM_MAIN_MIN 1000   # Minimum PWM (motors stopped)
+param set-default PWM_MAIN_MAX 2000   # Maximum PWM (full throttle)
+param set-default PWM_MAIN_DISARM 900 # Disarmed PWM value
+param set-default PWM_MAIN_RATE 400   # PWM update rate (Hz)
+
+# Flight tuning - Starting values from simulation
+param set-default MC_AIRMODE 1
+param set-default MPC_THR_HOVER 0.35  # May need adjustment after first flights
+param set-default MPC_MANTHR_MIN 0.08
+
+# Rate control gains - Starting baseline (tune with real hardware!)
+# These are simulation-tested values - expect to retune for real dynamics
+param set-default MC_ROLLRATE_P 0.15
+param set-default MC_PITCHRATE_P 0.15
+param set-default MC_YAWRATE_P 0.2
+
+param set-default MC_ROLLRATE_I 0.2
+param set-default MC_PITCHRATE_I 0.2
+param set-default MC_YAWRATE_I 0.1
+
+param set-default MC_ROLLRATE_D 0.003
+param set-default MC_PITCHRATE_D 0.003
+param set-default MC_YAWRATE_D 0.0
+
+# Attitude control
+param set-default MC_ROLL_P 6.5
+param set-default MC_PITCH_P 6.5
+param set-default MC_YAW_P 2.8
+
+# Sensor Configuration
+param set-default SENS_BOARD_ROT 0         # Board rotation (adjust if IMU is rotated)
+param set-default CAL_GYRO0_ID 0           # Gyro calibration ID
+param set-default CAL_ACC0_ID 0            # Accelerometer calibration ID
+param set-default CAL_MAG0_ID 0            # Magnetometer calibration ID
+
+# EKF2 settings for real hardware
+param set-default EKF2_HGT_REF 3           # Use GPS and barometer for height
+param set-default EKF2_AID_MASK 1          # Enable GPS
+param set-default EKF2_MAG_TYPE 1          # Use magnetometer
+param set-default EKF2_GPS_CHECK 21        # GPS quality checks
+
+# Safety Parameters - CRITICAL FOR REAL HARDWARE
+param set-default COM_ARM_WO_GPS 0         # Require GPS for arming (outdoor flights)
+param set-default COM_RC_LOSS_T 0.5        # RC loss failsafe timeout (seconds)
+param set-default COM_RCL_EXCEPT 0         # No exceptions to RC loss handling
+param set-default COM_OF_LOSS_T 0.5        # Offboard loss timeout
+param set-default COM_LOW_BAT_ACT 2        # Return to land on low battery
+param set-default COM_DISARM_LAND 2.0      # Auto-disarm 2s after landing
+
+# Geofence (Optional but recommended for testing)
+param set-default GF_ACTION 2              # Return to launch if geofence breached
+param set-default GF_MAX_HOR_DIST 100      # Max horizontal distance (meters)
+param set-default GF_MAX_VER_DIST 50       # Max altitude (meters)
+
+# Battery Settings (ADJUST FOR YOUR BATTERY!)
+# Example for 4S LiPo (14.8V nominal, 16.8V max, 12.4V min)
+param set-default BAT1_N_CELLS 4           # Number of cells
+param set-default BAT1_V_EMPTY 3.1         # Empty voltage per cell (V)
+param set-default BAT1_V_CHARGED 4.2       # Charged voltage per cell (V)
+param set-default BAT1_CAPACITY 5000       # Battery capacity (mAh) - ADJUST!
+
+# Return to Launch (RTL) Settings
+param set-default RTL_RETURN_ALT 30        # Return altitude (meters)
+param set-default RTL_DESCEND_ALT 10       # Start descending at this altitude
+param set-default RTL_LAND_DELAY 5         # Hover before landing (seconds)
+
+# Manual Control Tuning
+param set-default MPC_MAN_TILT_MAX 35      # Max tilt angle in manual mode (degrees)
+param set-default MPC_Z_VEL_MAX_UP 3       # Max vertical ascent velocity (m/s)
+param set-default MPC_Z_VEL_MAX_DN 1.5     # Max vertical descent velocity (m/s)
+
+# IMPORTANT NOTES FOR FIRST FLIGHT:
+# 1. Calibrate all sensors: compass, gyro, accelerometer, level horizon
+# 2. Verify motor directions match the airframe configuration
+# 3. Test motor/prop spin directions (CW vs CCW as defined above)
+# 4. Check that ESC calibration is correct (if needed)
+# 5. Perform radio calibration
+# 6. Set up failsafe modes on transmitter
+# 7. Start with conservative gains, use auto-tune after stable hover
+# 8. Test in a safe, open area with GPS lock
+# 9. Have a safety pilot ready with kill switch
+# 10. Verify RL controller works in simulation before real deployment
