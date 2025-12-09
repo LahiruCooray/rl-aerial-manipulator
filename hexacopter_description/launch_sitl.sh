@@ -27,7 +27,10 @@ sleep 2
 echo -e "${GREEN}Starting Custom Hexacopter SITL...${NC}"
 echo -e "${GREEN}Model: custom_hexa (Hexacopter)${NC}"
 echo -e "${GREEN}Airframe: 4022 (Hexarotor X)${NC}"
+echo -e "${GREEN}World: custom_hexa_world${NC}"
 echo ""
 
+# Set custom world file
+export PX4_GZ_WORLD=custom_hexa_world
 
 make px4_sitl gz_custom_hexa
