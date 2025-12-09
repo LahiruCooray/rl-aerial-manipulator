@@ -16,7 +16,7 @@ This directory contains a custom hexacopter model for Gazebo simulation with PX4
 - Propellers: 11×5.7 inches
 - Motors: 1250 KV brushless
 - Configuration: Hexarotor X-layout
-- Total mass: ~2.0 kg
+- Total mass: 2.72 kg
 
 ## Directory Structure
 
