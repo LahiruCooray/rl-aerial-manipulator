@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- SRDF (Semantic Robot Description Format) file for MoveIt. -->
+
+<robot name="manipulator">
+
+    <!-- Planning groups—>logical sets of joints/links that MoveIt will control as a unit.
+    
+    Why groups? MoveIt’s planners operate per group. 
+     You’ll ask it to plan for "arm" (cartesian IK/trajectories) and optionally open/close "gripper".-->
+  
+    <group name="arm">  <!-- This tells MoveIt "the manipulator arm consists of these joints."-->
+        <joint name="base_plate_fixed"/>    <!-- world↔base fixed joint -->
+        <joint name="joint_1"/>
+        <joint name="joint_2"/>
+        <joint name="joint_3"/>
+
+        <joint name="joint_gripperbase_to_motor4"/>      <!-- rod↔gripper_base fixed joint -->
+    </group>
+
+    <group name="gripper">  <!-- This tells MoveIt "the gripper consists of these joints."-->
+        <joint name="joint_4"/>
+        <joint name="joint_5"/>
+    </group>
+
+    <!-- Group states → named “home” poses
+         You define default joint configurations that are handy to return to (e.g., “home”).
+         Values are radians for revolute joints -->
+
+    <group_state name="home" group="arm">
+        <joint name="joint_1" value="0"/>
+        <joint name="joint_2" value="0"/>
+        <joint name="joint_3" value="0"/>
+    </group_state>
+
+    <group_state name="home" group="gripper">
+        <joint name="joint_4" value="0"/>
+    </group_state>
+    
+    <!-- Adjacent links - directly connected via joints -->
+    <disable_collisions link1="base_plate" link2="motor_1" reason="Adjacent"/>
+    <disable_collisions link1="motor_1" link2="razor_connector" reason="Adjacent"/>
+    <disable_collisions link1="razor_connector" link2="motor_2" reason="Adjacent"/>
+    <disable_collisions link1="motor_2" link2="h_arm" reason="Adjacent"/>
+    <disable_collisions link1="h_arm" link2="motor_3" reason="Adjacent"/>
+    <disable_collisions link1="motor_3" link2="rod" reason="Adjacent"/>
+    <disable_collisions link1="rod" link2="gripper_base" reason="Adjacent"/>
+    <disable_collisions link1="gripper_base" link2="motor_4" reason="Adjacent"/>
+    <disable_collisions link1="gripper_base" link2="gripper_L" reason="Adjacent"/>
+    <disable_collisions link1="gripper_base" link2="gripper_R" reason="Adjacent"/>
+    
+    <!-- Close proximity -->
+    <disable_collisions link1="razor_connector" link2="h_arm" reason="Never"/>
+    <disable_collisions link1="h_arm" link2="rod" reason="Never"/>
+    <disable_collisions link1="gripper_L" link2="gripper_R" reason="Never"/>
+
+    <!-- Each link of your robot (like base, arm, gripper, etc.) has a mesh or shape that represents its physical volume.
+         During motion planning, MoveIt continuously checks: “Do any two shapes occupy the same 3D space at the same time?”
+         If yes, that’s a collision → the pose or trajectory is invalid.-->  
+    
+    <!-- Imagine your robot arm trying to reach down:
+                If the gripper hits the base plate, that’s a self-collision.
+                If the gripper hits the table, that’s an environment collision.
+         MoveIt’s planner will then reject that motion and search for another path.-->   
+
+    <!-- But some collisions are okay. For example, adjacent links are always touching, so they’re always colliding.
+         And some links are very close together, so you might want to ignore collisions between them.
+         You can disable collision checking between any two links with a <disable_collision> tag.-->
+
+    <!-- Adjacent : The two links are directly connected (neighbors in the kinematic chain). They’re always touching or share a joint.
+         Never : The author wants to say “these two parts should never collide,” but they were disabled anyway to simplify planning or because the collision check is unnecessary-->
+
+</robot>
