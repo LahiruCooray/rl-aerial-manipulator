@@ -1,3 +1,6 @@
 venv/
 __pycache__/
 .vscode/
+install/
+build/
+log/
