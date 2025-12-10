@@ -1,0 +1,16 @@
+initial_positions:
+  joint_1: 0.0
+  joint_2: 0.0
+  joint_3: 0.0
+  joint_4: 0.01
+  joint_5: -0.01
+
+# This file defines the starting pose of your robot’s joints when MoveIt is launched or reset.
+
+
+# Purpose:
+    # Provides a known, collision-free configuration when MoveIt initializes.
+    # Used as the default “home” or “rest” position before planning new trajectories.
+
+# How it’s used:
+    # When you open RViz or launch MoveIt, this file sets all joints to the specified initial values.
