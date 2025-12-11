@@ -153,7 +153,14 @@
 
         <!-- Reasonable limits (modify as needed) -->
         <limit lower="-3.14" upper="3.14" effort="2.0" velocity="5.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.1" friction="0.1"/>
     </joint>
+
+    <gazebo reference="joint_1">
+        <initial_position>0.0</initial_position>
+    </gazebo>
 
     <link name="h_arm">
         <inertial>
@@ -193,7 +200,14 @@
         <axis xyz="1 0 0"/>
 
         <limit lower="-1.57" upper="1.57" effort="2.0" velocity="3.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.1" friction="0.1"/>
     </joint>
+
+    <gazebo reference="joint_2">
+        <initial_position>0.0</initial_position>
+    </gazebo>
 
 
 
@@ -232,7 +246,14 @@
         <!-- Rotation around X-axis -->
         <axis xyz="1 0 0"/>
         <limit lower="-1.57" upper="1.57" effort="2.0" velocity="3.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.1" friction="0.1"/>
     </joint>
+
+    <gazebo reference="joint_3">
+        <initial_position>0.0</initial_position>
+    </gazebo>
 
 
     <link name="rod">
@@ -385,7 +406,14 @@
         <axis xyz="0 1 0"/>
 
         <limit lower="0" upper="1.2" effort="1.0" velocity="2.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.05" friction="0.05"/>
     </joint>
+
+    <gazebo reference="joint_4">
+        <initial_position>0.01</initial_position>
+    </gazebo>
 
     <link name="gripper_R">
         <inertial>
@@ -428,7 +456,14 @@
 
         <limit lower="-1.2" upper="0" effort="1.0" velocity="2.0"/>
         <mimic joint="joint_4" multiplier="-1"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.05" friction="0.05"/>
     </joint>
+
+    <gazebo reference="joint_5">
+        <initial_position>-0.01</initial_position>
+    </gazebo>
 
     
 </robot>

@@ -1,14 +1,100 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="manipulator">
 
+    <!-- Get the controller config file path using xacro -->
+    <xacro:property name="controller_config" value="$(find manipulator_controller)/config/manipulator_controllers.yaml" />
+
     <gazebo>
         <!-- Gazebo Harmonic (gz-sim) ROS 2 Control plugin -->
         <plugin filename="gz_ros2_control-system"
                 name="gz_ros2_control::GazeboSimROS2ControlPlugin">
 
-            <parameters>$(find manipulator_controller)/config/manipulator_controllers.yaml</parameters>
+            <parameters>${controller_config}</parameters>
+            <controller_manager_name>controller_manager</controller_manager_name>
 
         </plugin>
+    </gazebo>
+
+    <!-- DART Physics Engine Configuration -->
+    <!-- DART requires explicit friction and contact parameters for stable simulation -->
+    
+    <!-- Configure friction for all links -->
+    <gazebo reference="base_plate">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+        <minDepth>0.001</minDepth>
+    </gazebo>
+
+    <gazebo reference="motor_1">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="razor_connector">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="motor_2">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="h_arm">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="motor_3">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="rod">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="gripper_base">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="motor_4">
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="gripper_L">
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
+    </gazebo>
+
+    <gazebo reference="gripper_R">
+        <mu1>1.0</mu1>
+        <mu2>1.0</mu2>
+        <kp>1000000.0</kp>
+        <kd>100.0</kd>
     </gazebo>
 
 </robot>
