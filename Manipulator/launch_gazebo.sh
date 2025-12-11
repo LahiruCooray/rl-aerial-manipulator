@@ -12,8 +12,7 @@ pkill -9 -f "gz sim" 2>/dev/null
 pkill -9 -f "gz_ros_control" 2>/dev/null
 sleep 1
 
-# Navigate to workspace
-cd ~/newlocalrepo/rl-aerial-manipulator/Manipulator
+
 
 # Source the workspace
 echo "[2/3] Sourcing workspace..."

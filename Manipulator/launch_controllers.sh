@@ -19,8 +19,7 @@ sleep 1
 ros2 daemon start
 sleep 1
 
-# Navigate to workspace
-cd ~/newlocalrepo/rl-aerial-manipulator/Manipulator
+
 
 # Source the workspace
 echo "[3/4] Sourcing workspace..."
