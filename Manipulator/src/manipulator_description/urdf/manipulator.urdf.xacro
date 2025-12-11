@@ -5,7 +5,8 @@
     <xacro:include filename="$(find manipulator_description)/urdf/manipulator_ros2_control.xacro"/>
 
     <!-- Links -->
-    <link name="world"/>
+    <!-- NOTE: world link and base_plate_fixed joint removed for aerial manipulator integration -->
+    <!-- The base_plate will be connected to hexacopter::base_link via the world file -->
 
     <link name="base_plate">
         <inertial>
@@ -34,13 +35,6 @@
             </geometry>
         </collision>
     </link>
-
-
-    <joint name="base_plate_fixed" type="fixed">
-        <parent link="world"/>
-        <child link="base_plate"/>
-        <origin xyz="0 0 0.5" rpy="0 0 0"/>  <!-- Raised whole model +0.5 m along Z -->
-    </joint>
 
 
     <link name="motor_1">
