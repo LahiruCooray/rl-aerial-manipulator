@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-# @name Custom Hexarotor X
-# @type Hexarotor x
+# @name Custom Hexarotor X with Arm
+# @type Hexarotor x with manipulator
 #
 
 . ${R}etc/init.d/rc.mc_defaults
@@ -10,6 +10,7 @@
 PX4_SIMULATOR=${PX4_SIMULATOR:=gz}
 PX4_GZ_WORLD=${PX4_GZ_WORLD:=custom_hexa_world}
 PX4_SIM_MODEL=${PX4_SIM_MODEL:=custom_hexa_arm}
+
 
 # Enable Gazebo
 param set-default SIM_GZ_EN 1

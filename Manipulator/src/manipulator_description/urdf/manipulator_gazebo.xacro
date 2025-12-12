@@ -27,7 +27,7 @@
         <minDepth>0.001</minDepth>
     </gazebo>
 
-    <gazebo reference="motor_1">
+    <gazebo reference="arm_motor_1">
         <mu1>0.8</mu1>
         <mu2>0.8</mu2>
         <kp>1000000.0</kp>
@@ -41,7 +41,7 @@
         <kd>100.0</kd>
     </gazebo>
 
-    <gazebo reference="motor_2">
+    <gazebo reference="arm_motor_2">
         <mu1>0.8</mu1>
         <mu2>0.8</mu2>
         <kp>1000000.0</kp>
@@ -55,7 +55,7 @@
         <kd>100.0</kd>
     </gazebo>
 
-    <gazebo reference="motor_3">
+    <gazebo reference="arm_motor_3">
         <mu1>0.8</mu1>
         <mu2>0.8</mu2>
         <kp>1000000.0</kp>
@@ -76,7 +76,7 @@
         <kd>100.0</kd>
     </gazebo>
 
-    <gazebo reference="motor_4">
+    <gazebo reference="arm_motor_4">
         <mu1>0.8</mu1>
         <mu2>0.8</mu2>
         <kp>1000000.0</kp>

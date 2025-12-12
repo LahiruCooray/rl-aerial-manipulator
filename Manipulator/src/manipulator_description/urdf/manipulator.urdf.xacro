@@ -37,7 +37,7 @@
     </link>
 
 
-    <link name="motor_1">
+    <link name="arm_motor_1">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0.075"/>
@@ -66,7 +66,7 @@
 
     <joint name="joint_motor_1" type="fixed">
         <parent link="base_plate"/>
-        <child link="motor_1"/>
+        <child link="arm_motor_1"/>
 
         <!-- Motor attached below the plate -->
         <origin xyz="0 0 -0.0245" rpy="0 0 0"/>
@@ -100,7 +100,7 @@
     </link>
 
     <joint name="joint_motor1_to_connector" type="fixed">
-        <parent link="motor_1"/>
+        <parent link="arm_motor_1"/>
         <child link="razor_connector"/>
 
         <!-- Connector sits ABOVE motor_1 -->
@@ -108,7 +108,7 @@
     </joint>
 
 
-    <link name="motor_2">
+    <link name="arm_motor_2">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0.082"/>
@@ -137,7 +137,7 @@
 
     <joint name="joint_1" type="revolute">
         <parent link="razor_connector"/>
-        <child link="motor_2"/>
+        <child link="arm_motor_2"/>
 
         <!-- Motor 2 sits ABOVE the connector -->
         <origin xyz="0 -0.010 -0.016" rpy="0 0 0"/>
@@ -184,7 +184,7 @@
     </link>
    
     <joint name="joint_2" type="revolute">
-        <parent link="motor_2"/>
+        <parent link="arm_motor_2"/>
         <child link="h_arm"/>
 
         <!-- Arm sits Below motor_2 -->
@@ -205,7 +205,7 @@
 
 
 
-    <link name="motor_3">
+    <link name="arm_motor_3">
         <inertial>
             <origin xyz="0 0 -0.015" rpy="0 0 0"/>
             <mass value="0.085"/>
@@ -234,7 +234,7 @@
     
     <joint name="joint_3" type="revolute">
         <parent link="h_arm"/>
-        <child link="motor_3"/>
+        <child link="arm_motor_3"/>
         
         <origin xyz="0 0 -0.106" rpy="0 0 0"/>
         <!-- Rotation around X-axis -->
@@ -279,7 +279,7 @@
 
     <!-- Rod fixedly connected to Motor 3 -->
     <joint name="joint_motor3_to_rod" type="fixed">
-        <parent link="motor_3"/>
+        <parent link="arm_motor_3"/>
         <child  link="rod"/>
 
         <!-- Rod center 0.0575 m above motor_3 center:
@@ -324,7 +324,7 @@
     </joint>
 
 
-    <link name="motor_4">
+    <link name="arm_motor_4">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0.055"/>
@@ -353,7 +353,7 @@
 
     <joint name="joint_gripperbase_to_motor4" type="fixed">
         <parent link="gripper_base"/>
-        <child  link="motor_4"/>
+        <child  link="arm_motor_4"/>
 
         <!-- Motor 4 mounted on top of the gripper base -->
         <origin xyz="0.027 -0.024 -0.002" rpy="0 0 0"/>
