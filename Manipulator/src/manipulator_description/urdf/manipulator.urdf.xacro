@@ -357,11 +357,13 @@
         </inertial>
 
         <visual>
-            <origin xyz="0 0 -0.022" rpy="0 0 0"/>
+            <origin xyz="-0.009 -0.002 -0.075" rpy="-${PI / 2} -${PI / 2} 0"/>
             <geometry>
-                <!-- w=10mm, h=3mm, d=60mm -->
-                <box size="0.010 0.003 0.060"/>
+                <mesh filename="package://manipulator_description/meshes/left_finger.STL" scale="0.0015 0.0015 0.0015"/>
             </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
         </visual>
 
         <collision>
@@ -397,11 +399,13 @@
         </inertial>
 
         <visual>
-            <origin xyz="0 0 -0.022" rpy="0 0 0"/>
+            <origin xyz="-0.011 -0.002 -0.075" rpy="-${PI / 2} -${PI / 2} 0"/>
             <geometry>
-                <!-- w=10mm, h=3mm, d=60mm -->
-                <box size="0.010 0.003 0.060"/>
+                <mesh filename="package://manipulator_description/meshes/right_finger.STL" scale="0.0015 0.0015 0.0015"/>
             </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
         </visual>
 
         <collision>
