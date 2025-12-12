@@ -49,9 +49,9 @@
             <mass value="0.075"/>
 
             <inertia 
-                ixx="1.68e-5" ixy="0" ixz="0"
-                iyy="2.48e-5" iyz="0"
-                izz="1.65e-5"/>
+                ixx="1.512500e-05" ixy="0" ixz="0"
+                iyy="2.475625e-05" iyz="0"
+                izz="1.568125e-05"/>
         </inertial>
 
         <visual>
@@ -85,9 +85,9 @@
             <mass value="0.01"/>
 
             <inertia 
-                ixx="3.05e-7" ixy="0" ixz="0"
-                iyy="3.05e-7" iyz="0"
-                izz="1.51e-7"/>
+                ixx="1.28958333e-07" ixy="0" ixz="0"
+                iyy="1.28958333e-07" iyz="0"
+                izz="1.51250000e-07"/>
         </inertial>
 
         <visual>
@@ -120,9 +120,9 @@
             <mass value="0.082"/>
 
             <inertia
-                ixx="2.09e-5" ixy="0" ixz="0"
-                iyy="3.34e-5" iyz="0"
-                izz="2.20e-5"/>
+                ixx="2.10193333e-05" ixy="0" ixz="0"
+                iyy="2.31308333e-05" iyz="0"
+                izz="3.62781667e-05"/>
         </inertial>
 
         <visual>
@@ -161,9 +161,9 @@
             <mass value="0.054"/>
 
             <inertia
-                ixx="2.54e-5" ixy="0" ixz="0"
-                iyy="2.46e-5" iyz="0"
-                izz="9.435e-07"/>
+                ixx="1.980045e-04" ixy="0" ixz="0"
+                iyy="2.266425e-04" iyz="0"
+                izz="3.426300e-05"/>
         </inertial>
 
         <visual>
@@ -203,9 +203,9 @@
             <mass value="0.085"/>
 
             <inertia 
-                ixx="3.13e-5" ixy="0" ixz="0"
-                iyy="4.37e-5" iyz="0"
-                izz="1.39e-5"/>
+                ixx="4.90520833e-05" ixy="0" ixz="0"
+                iyy="6.45220833e-05" iyz="0"
+                izz="2.43241667e-05"/>
         </inertial>
 
         <visual>
@@ -241,9 +241,9 @@
             <mass value="0.02"/>
 
             <inertia
-                ixx="5.28e-6" ixy="0" ixz="0"
-                iyy="5.28e-6" iyz="0"
-                izz="3.60e-7"/>
+                ixx="5.22166667e-06" ixy="0" ixz="0"
+                iyy="5.22166667e-06" iyz="0"
+                izz="3.60000000e-07"/>
         </inertial>
 
         <visual>
@@ -279,9 +279,9 @@
             <mass value="0.020"/>
 
             <inertia
-                ixx="4.19e-6" ixy="0" ixz="0"
-                iyy="6.76e-6" iyz="0"
-                izz="1.00e-6"/>
+                ixx="4.18166667e-06" ixy="0" ixz="0"
+                iyy="6.83333333e-06" iyz="0"
+                izz="2.68166667e-06"/>
         </inertial>
 
         <visual>
@@ -315,9 +315,9 @@
             <mass value="0.055"/>
 
             <inertia
-                ixx="1.25e-5" ixy="0" ixz="0"
-                iyy="1.75e-5" iyz="0"
-                izz="1.82e-5"/>
+                ixx="1.11145833e-05" ixy="0" ixz="0"
+                iyy="1.07066667e-05" iyz="0"
+                izz="1.81545833e-05"/>
         </inertial>
 
         <visual>
@@ -351,17 +351,19 @@
             <mass value="0.020"/>
 
             <inertia
-                ixx="6.03e-6" ixy="0" ixz="0"
-                iyy="6.10e-6" iyz="0"
-                izz="1.00e-7"/>
+                ixx="1.56950000e-05" ixy="0" ixz="0"
+                iyy="1.58466667e-05" iyz="0"
+                izz="1.81666667e-07"/>
         </inertial>
 
         <visual>
-            <origin xyz="0 0 -0.022" rpy="0 0 0"/>
+            <origin xyz="-0.009 -0.002 -0.075" rpy="-${PI / 2} -${PI / 2} 0"/>
             <geometry>
-                <!-- w=10mm, h=3mm, d=60mm -->
-                <box size="0.010 0.003 0.060"/>
+                <mesh filename="package://manipulator_description/meshes/left_finger.STL" scale="0.0015 0.0015 0.0015"/>
             </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
         </visual>
 
         <collision>
@@ -391,17 +393,19 @@
             <mass value="0.020"/>
 
             <inertia
-                ixx="6.03e-6" ixy="0" ixz="0"
-                iyy="6.10e-6" iyz="0"
-                izz="1.00e-7"/>
+                ixx="1.56950000e-05" ixy="0" ixz="0"
+                iyy="1.58466667e-05" iyz="0"
+                izz="1.81666667e-07"/>
         </inertial>
 
         <visual>
-            <origin xyz="0 0 -0.022" rpy="0 0 0"/>
+            <origin xyz="-0.011 -0.002 -0.075" rpy="-${PI / 2} -${PI / 2} 0"/>
             <geometry>
-                <!-- w=10mm, h=3mm, d=60mm -->
-                <box size="0.010 0.003 0.060"/>
+                <mesh filename="package://manipulator_description/meshes/right_finger.STL" scale="0.0015 0.0015 0.0015"/>
             </geometry>
+            <material name="black">
+                <color rgba="0.1 0.1 0.1 1.0"/>
+            </material>
         </visual>
 
         <collision>
