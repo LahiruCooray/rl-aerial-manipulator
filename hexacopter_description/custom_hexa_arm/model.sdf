@@ -1744,7 +1744,7 @@
     
     <!-- Include manipulator model -->
     <include>
-      <uri>file:///home/lahiru/newlocalrepo/rl-aerial-manipulator/Manipulator/src/manipulator_description/sdf</uri>
+      <uri>model://manipulator_description/sdf</uri>
       <name>manipulator</name>
       <!-- Position manipulator base_plate at same Z as hexacopter base_link -->
       <!-- Adjust pose as needed for your mounting -->
