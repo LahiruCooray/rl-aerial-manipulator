@@ -32,4 +32,8 @@ echo ""
 # Set custom world file
 export PX4_GZ_WORLD=custom_hexa_world
 
+# Add ROS 2 Gazebo plugins to path for gz_ros2_control
+export GZ_SIM_SYSTEM_PLUGIN_PATH=/opt/ros/jazzy/lib:$GZ_SIM_SYSTEM_PLUGIN_PATH
+export LD_LIBRARY_PATH=/opt/ros/jazzy/lib:$LD_LIBRARY_PATH
+
 make px4_sitl gz_custom_hexa_arm
