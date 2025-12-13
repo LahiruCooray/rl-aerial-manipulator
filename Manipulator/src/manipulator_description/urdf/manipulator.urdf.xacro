@@ -5,7 +5,8 @@
     <xacro:include filename="$(find manipulator_description)/urdf/manipulator_ros2_control.xacro"/>
 
     <!-- Links -->
-    <link name="world"/>
+    <!-- NOTE: world link and base_plate_fixed joint removed for aerial manipulator integration -->
+    <!-- The base_plate will be connected to hexacopter::base_link via the world file -->
 
     <link name="base_plate">
         <inertial>
@@ -36,14 +37,7 @@
     </link>
 
 
-    <joint name="base_plate_fixed" type="fixed">
-        <parent link="world"/>
-        <child link="base_plate"/>
-        <origin xyz="0 0 0.5" rpy="0 0 0"/>  <!-- Raised whole model +0.5 m along Z -->
-    </joint>
-
-
-    <link name="motor_1">
+    <link name="arm_motor_1">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0.075"/>
@@ -72,7 +66,7 @@
 
     <joint name="joint_motor_1" type="fixed">
         <parent link="base_plate"/>
-        <child link="motor_1"/>
+        <child link="arm_motor_1"/>
 
         <!-- Motor attached below the plate -->
         <origin xyz="0 0 -0.0245" rpy="0 0 0"/>
@@ -106,7 +100,7 @@
     </link>
 
     <joint name="joint_motor1_to_connector" type="fixed">
-        <parent link="motor_1"/>
+        <parent link="arm_motor_1"/>
         <child link="razor_connector"/>
 
         <!-- Connector sits ABOVE motor_1 -->
@@ -114,7 +108,7 @@
     </joint>
 
 
-    <link name="motor_2">
+    <link name="arm_motor_2">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0.082"/>
@@ -143,7 +137,7 @@
 
     <joint name="joint_1" type="revolute">
         <parent link="razor_connector"/>
-        <child link="motor_2"/>
+        <child link="arm_motor_2"/>
 
         <!-- Motor 2 sits ABOVE the connector -->
         <origin xyz="0 -0.010 -0.016" rpy="0 0 0"/>
@@ -153,7 +147,14 @@
 
         <!-- Reasonable limits (modify as needed) -->
         <limit lower="-3.14" upper="3.14" effort="2.0" velocity="5.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.1" friction="0.1"/>
     </joint>
+
+    <gazebo reference="joint_1">
+        <initial_position>0.0</initial_position>
+    </gazebo>
 
     <link name="h_arm">
         <inertial>
@@ -183,7 +184,7 @@
     </link>
    
     <joint name="joint_2" type="revolute">
-        <parent link="motor_2"/>
+        <parent link="arm_motor_2"/>
         <child link="h_arm"/>
 
         <!-- Arm sits Below motor_2 -->
@@ -193,11 +194,18 @@
         <axis xyz="1 0 0"/>
 
         <limit lower="-1.57" upper="1.57" effort="2.0" velocity="3.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.1" friction="0.1"/>
     </joint>
 
+    <gazebo reference="joint_2">
+        <initial_position>0.0</initial_position>
+    </gazebo>
 
 
-    <link name="motor_3">
+
+    <link name="arm_motor_3">
         <inertial>
             <origin xyz="0 0 -0.015" rpy="0 0 0"/>
             <mass value="0.085"/>
@@ -226,13 +234,20 @@
     
     <joint name="joint_3" type="revolute">
         <parent link="h_arm"/>
-        <child link="motor_3"/>
+        <child link="arm_motor_3"/>
         
         <origin xyz="0 0 -0.106" rpy="0 0 0"/>
         <!-- Rotation around X-axis -->
         <axis xyz="1 0 0"/>
         <limit lower="-1.57" upper="1.57" effort="2.0" velocity="3.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.1" friction="0.1"/>
     </joint>
+
+    <gazebo reference="joint_3">
+        <initial_position>0.0</initial_position>
+    </gazebo>
 
 
     <link name="rod">
@@ -264,7 +279,7 @@
 
     <!-- Rod fixedly connected to Motor 3 -->
     <joint name="joint_motor3_to_rod" type="fixed">
-        <parent link="motor_3"/>
+        <parent link="arm_motor_3"/>
         <child  link="rod"/>
 
         <!-- Rod center 0.0575 m above motor_3 center:
@@ -309,7 +324,7 @@
     </joint>
 
 
-    <link name="motor_4">
+    <link name="arm_motor_4">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0.055"/>
@@ -338,7 +353,7 @@
 
     <joint name="joint_gripperbase_to_motor4" type="fixed">
         <parent link="gripper_base"/>
-        <child  link="motor_4"/>
+        <child  link="arm_motor_4"/>
 
         <!-- Motor 4 mounted on top of the gripper base -->
         <origin xyz="0.027 -0.024 -0.002" rpy="0 0 0"/>
@@ -384,8 +399,15 @@
         <!-- Rotation about Y-axis -->
         <axis xyz="0 1 0"/>
 
-        <limit lower="0" upper="1.2" effort="1.0" velocity="2.0"/>
+        <limit lower="-0.001" upper="1.2" effort="1.0" velocity="2.0"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.05" friction="0.05"/>
     </joint>
+
+    <gazebo reference="joint_4">
+        <initial_position>0.01</initial_position>
+    </gazebo>
 
     <link name="gripper_R">
         <inertial>
@@ -426,9 +448,16 @@
         <!-- Rotation about Y-axis -->
         <axis xyz="0 1 0"/>
 
-        <limit lower="-1.2" upper="0" effort="1.0" velocity="2.0"/>
+        <limit lower="-1.2" upper="0.001" effort="1.0" velocity="2.0"/>
         <mimic joint="joint_4" multiplier="-1"/>
+        
+        <!-- DART physics dynamics -->
+        <dynamics damping="0.05" friction="0.05"/>
     </joint>
+
+    <gazebo reference="joint_5">
+        <initial_position>-0.01</initial_position>
+    </gazebo>
 
     
 </robot>

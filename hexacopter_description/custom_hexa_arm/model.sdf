@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.9">
-  <model name="custom_hexa">
+  <model name="custom_hexa_arm">
     <static>false</static>
     <pose>0 0 0 0 0 0</pose>
 
@@ -1629,7 +1629,7 @@
         <!-- Gazebo Harmonic Multicopter motor model plugins -->
         <!-- Motor: SunnySky X2216 KV1250, Battery: 4S LiPo (14.8V), Propeller: 11x5.7" CF -->
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>custom_hexa_0</robotNamespace>
+          <robotNamespace>custom_hexa_arm_0</robotNamespace>
           <jointName>rotor_0_joint</jointName>
           <linkName>rotor_0</linkName>
           <turningDirection>cw</turningDirection>
@@ -1646,7 +1646,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>custom_hexa_0</robotNamespace>
+          <robotNamespace>custom_hexa_arm_0</robotNamespace>
           <jointName>rotor_1_joint</jointName>
           <linkName>rotor_1</linkName>
           <turningDirection>ccw</turningDirection>
@@ -1663,7 +1663,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>custom_hexa_0</robotNamespace>
+          <robotNamespace>custom_hexa_arm_0</robotNamespace>
           <jointName>rotor_2_joint</jointName>
           <linkName>rotor_2</linkName>
           <turningDirection>ccw</turningDirection>
@@ -1680,7 +1680,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>custom_hexa_0</robotNamespace>
+          <robotNamespace>custom_hexa_arm_0</robotNamespace>
           <jointName>rotor_3_joint</jointName>
           <linkName>rotor_3</linkName>
           <turningDirection>cw</turningDirection>
@@ -1697,7 +1697,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>custom_hexa_0</robotNamespace>
+          <robotNamespace>custom_hexa_arm_0</robotNamespace>
           <jointName>rotor_4_joint</jointName>
           <linkName>rotor_4</linkName>
           <turningDirection>ccw</turningDirection>
@@ -1714,7 +1714,7 @@
           <motorType>velocity</motorType>
         </plugin>
         <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
-          <robotNamespace>custom_hexa_0</robotNamespace>
+          <robotNamespace>custom_hexa_arm_0</robotNamespace>
           <jointName>rotor_5_joint</jointName>
           <linkName>rotor_5</linkName>
           <turningDirection>cw</turningDirection>
@@ -1737,7 +1737,12 @@
 
     <!-- Sensor system plugins are provided by PX4 gz_bridge (server.config). -->
     <!-- Avoid loading them here to prevent duplicate publications. -->
-         <!-- Include manipulator model -->
+
+    <!-- ========================================= -->
+    <!-- MANIPULATOR INTEGRATION -->
+    <!-- ========================================= -->
+    
+    <!-- Include manipulator model -->
     <include>
       <uri>file:///home/lahiru/newlocalrepo/rl-aerial-manipulator/Manipulator/src/manipulator_description/sdf</uri>
       <name>manipulator</name>

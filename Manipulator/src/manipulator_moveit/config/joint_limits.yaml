@@ -1,43 +1,53 @@
-default_velocity_scaling_factor: 0.1
-default_acceleration_scaling_factor: 0.1
+default_velocity_scaling_factor: 0.7  # Use 70% of max speed for smooth motion
+default_acceleration_scaling_factor: 0.7  # Use 70% of max acceleration
 
 # Joint limits for each joint in the manipulator
+# All joints use TowerPro MG996R servos
+# MG996R specs: 0.17s/60° @ 6V = ~6.1 rad/s no-load, realistic loaded: 2-4 rad/s
+# Acceleration: ~5-15 rad/s² depending on load
 joint_limits:
   joint_1:
     has_velocity_limits: true
-    max_velocity: 10.0  # rad/s
+    max_velocity: 3.0  # rad/s - Conservative for base rotation under load
     has_acceleration_limits: true
-    max_acceleration: 1.0  # rad/s^2
-    # Pilz expects deceleration with negative sign (convention: braking is negative)
-    max_deceleration: -1.0  # rad/s^2
+    max_acceleration: 8.0  # rad/s² - MG996R typical acceleration
+    max_deceleration: -8.0  # rad/s² - Symmetric braking
   
   joint_2:
     has_velocity_limits: true
-    max_velocity: 10.0  # rad/s
+    max_velocity: 3.0  # rad/s - Shoulder joint carries most weight
     has_acceleration_limits: true
-    max_acceleration: 1.0  # rad/s^2
-    max_deceleration: -1.0  # rad/s^2
+    max_acceleration: 8.0  # rad/s²
+    max_deceleration: -8.0  # rad/s²
+    # Add position limits with safety margin to prevent boundary condition errors
+    has_position_limits: true
+    min_position: -1.55  # Slightly tighter than URDF limit of -1.57
+    max_position: 1.55   # Slightly tighter than URDF limit of 1.57
 
   joint_3:
     has_velocity_limits: true
-    max_velocity: 10.0  # rad/s
+    max_velocity: 3.0  # rad/s - Elbow joint under moderate load
     has_acceleration_limits: true
-    max_acceleration: 1.0  # rad/s^2
-    max_deceleration: -1.0  # rad/s^2
+    max_acceleration: 8.0  # rad/s²
+    max_deceleration: -8.0  # rad/s²
+    # Add position limits with safety margin
+    has_position_limits: true
+    min_position: -1.55  # Slightly tighter than URDF limit of -1.57
+    max_position: 1.55   # Slightly tighter than URDF limit of 1.57
 
   joint_4:
     has_velocity_limits: true
-    max_velocity: 10.0  # rad/s
+    max_velocity: 2.0  # rad/s - Gripper joint, slower for precise control
     has_acceleration_limits: true
-    max_acceleration: 1.0  # rad/s^2
-    max_deceleration: -1.0  # rad/s^2
+    max_acceleration: 6.0  # rad/s² - Lower acceleration for gripper precision
+    max_deceleration: -6.0  # rad/s²
 
   joint_5:
     has_velocity_limits: true
-    max_velocity: 10.0  # rad/s
+    max_velocity: 2.0  # rad/s - Mimic joint, matches joint_4
     has_acceleration_limits: true
-    max_acceleration: 1.0  # rad/s^2
-    max_deceleration: -1.0  # rad/s^2
+    max_acceleration: 6.0  # rad/s²
+    max_deceleration: -6.0  # rad/s²
 
 
 # This file defines kinematic limits for each joint and sets global scaling factors for velocity and acceleration.

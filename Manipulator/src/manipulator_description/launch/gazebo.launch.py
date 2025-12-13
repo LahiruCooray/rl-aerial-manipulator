@@ -30,7 +30,8 @@ def generate_launch_description():
     )
 
     is_ignition = 'false'
-    physics_engine = "--physics-engine gz-physics-bullet-featherstone-plugin"
+    # Using DART physics engine instead of Bullet for better stability and accuracy
+    physics_engine = "--physics-engine gz-physics-dartsim-plugin"
 
     robot_description = ParameterValue(
         Command([
@@ -66,7 +67,13 @@ def generate_launch_description():
         executable='create',
         output='screen',
         arguments=['-topic', 'robot_description',
-                   '-name', 'manipulator']
+                   '-name', 'manipulator',
+                   # Set initial joint positions within safe bounds (avoiding -1.57/1.57 limits)
+                   '-joint_positions', 'joint_1=0.0',
+                   '-joint_positions', 'joint_2=0.0',
+                   '-joint_positions', 'joint_3=0.0',
+                   '-joint_positions', 'joint_4=0.01',
+                   '-joint_positions', 'joint_5=-0.01']
     )
 
     gz_ros2_bridge = Node(

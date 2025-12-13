@@ -55,6 +55,8 @@
         </joint>
 
         <!-- joint_5 mimics joint_4 with multiplier=-1 in the URDF -->
+        <!-- Note: gz_ros2_control does not expose mimic joints as controllable interfaces -->
+        <!-- The mimic behavior is handled by Gazebo's physics engine via the URDF <mimic> tag -->
         <joint name="joint_5">
             <param name="mimic">joint_4</param>
             <param name="multiplier">-1</param>
