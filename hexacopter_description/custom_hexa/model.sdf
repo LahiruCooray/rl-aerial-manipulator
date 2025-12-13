@@ -1733,25 +1733,11 @@
 
         <!-- topic control -->
 
-        <!-- ign topic -t /f550/command/motor_speed -m ignition.msgs.Actuators -p 'velocity:[700, 700, 700, 700, 700, 700]' -->
+        
 
     <!-- Sensor system plugins are provided by PX4 gz_bridge (server.config). -->
     <!-- Avoid loading them here to prevent duplicate publications. -->
-         <!-- Include manipulator model -->
-    <include>
-      <uri>file:///home/lahiru/newlocalrepo/rl-aerial-manipulator/Manipulator/src/manipulator_description/sdf</uri>
-      <name>manipulator</name>
-      <!-- Position manipulator base_plate at same Z as hexacopter base_link -->
-      <!-- Adjust pose as needed for your mounting -->
-      <pose>0 0 0 0 0 0</pose>
-    </include>
 
-    <!-- Fixed joint attaching manipulator to hexacopter -->
-    <joint name="hexa_arm_fixed" type="fixed">
-      <parent>base_link</parent>
-      <child>manipulator::base_plate</child>
-      <!-- No additional pose transform needed if already positioned correctly above -->
-    </joint>
 
   </model>
 </sdf>
